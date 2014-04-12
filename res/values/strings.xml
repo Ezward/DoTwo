@@ -6,5 +6,7 @@
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
+    <string name="label_new_todo">Add</string>
+    <string name="button_new_todo">Add</string>
 
 </resources>

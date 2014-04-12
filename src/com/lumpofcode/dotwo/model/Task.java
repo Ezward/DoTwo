@@ -3,45 +3,55 @@ package com.lumpofcode.dotwo.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public final class Task
+import com.parse.ParseClassName;
+import com.parse.ParseObject;
+
+@ParseClassName("Task")
+public final class Task extends ParseObject
 {
-	private static final String NAME = "name";
-	private static final String DONE = "done";
-	private String name;
-	private boolean done = false;
+	/* package private */ static final String LIST = "LIST";
+	/* package private */ static final String NAME = "NAME";
+	private static final String IS_DONE = "IS_DONE";
 	
 	// TODO: add other fields
 	
-	// private constructor enforces use of factory
-	private Task(final String theName) 
+	/**
+	 * Do NOT call this constructor directly.
+	 * The public no-arg constructor is required by Parse.
+	 * Instead, use the factory method of the TaskList that
+	 * you want the Task to be part of, like this;
+	 *     TaskList theTaskList = TaskLists.newTaskList("testList");
+	 *     Task theTask = theTaskList.newTask("testTask");
+	 */
+	public Task() 
 	{
-		if((null == theName) || theName.isEmpty()) throw new IllegalArgumentException("Task cannot be constructed; theName is null or empty.");
-		name=theName;
+		super();
 	}	
 	
-	/**
-	 * Factory constructor
-	 * @param theName must be non-null and non-empty
-	 * @return
-	 */
-	public static final Task newTask(final String theName)
+	
+	public TaskList list()
 	{
-		return new Task(theName);
+		return (TaskList)this.get("LIST");
 	}
 	
-	public String getName()
+	public String id()
 	{
-		return name;
+		return getObjectId();
+	}
+	
+	public String name()
+	{
+		return this.getString(NAME);
 	}
 
 	public boolean isDone()
 	{
-		return done;
+		return this.getBoolean(IS_DONE);
 	}
 
-	public void setDone(boolean done)
+	public void isDone(boolean done)
 	{
-		this.done = done;
+		this.put(IS_DONE, done);
 	}
 
 	/**
@@ -51,18 +61,23 @@ public final class Task
 	 * @return a Task constructed from the fields of the JSONObject
 	 * @throws IllegalArgumentException if JSONObject does not have a "name" field
 	 */
-	public static final Task fromJSONObject(final JSONObject theJSONObject)
+	public static final Task fromJSONObject(final JSONObject theJSONObject, final TaskList theParentList)
 	{
+		if(null == theJSONObject) throw new IllegalArgumentException();
+		if(null == theParentList) throw new IllegalArgumentException();
 		try
 		{
-			Task theTask = newTask(theJSONObject.getString(NAME));
-			if(theJSONObject.has(DONE)) theTask.setDone(theJSONObject.getBoolean(DONE));
+			// list in the task must match theParentList
+			if(!theParentList.id().equals(theJSONObject.getString(LIST))) throw new IllegalStateException();
+			
+			Task theTask = theParentList.newTask(theJSONObject.getString(NAME));
+			if(theJSONObject.has(IS_DONE)) theTask.isDone(theJSONObject.getBoolean(IS_DONE));
 			
 			return theTask;
 		}
 		catch (JSONException e)
 		{
-			throw new IllegalArgumentException(e);
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -74,8 +89,8 @@ public final class Task
 		try
 		{
 			final JSONObject theJSONObject = new JSONObject();
-			theJSONObject.put("name", this.name);
-			theJSONObject.put("done", this.done);
+			theJSONObject.put(NAME, this.name());
+			theJSONObject.put(IS_DONE, this.isDone());
 			
 			return theJSONObject;
 		}

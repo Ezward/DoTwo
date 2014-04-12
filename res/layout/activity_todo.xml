@@ -1,23 +1,42 @@
-<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".TodoActivity" >
 
-    <!--
-    This title strip will display the currently visible page title, as well as the page
-    titles for adjacent pages.
-    -->
-
-    <android.support.v4.view.PagerTitleStrip
-        android:id="@+id/pager_title_strip"
+	<android.support.v4.view.ViewPager 
+	    xmlns:tools="http://schemas.android.com/tools"
+	    android:id="@+id/pager"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	     >
+	
+	    <!--
+	    This title strip will display the currently visible page title, as well as the page
+	    titles for adjacent pages.
+	    -->
+	
+	    <android.support.v4.view.PagerTitleStrip
+	        android:id="@+id/pager_title_strip"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="top"
+	        android:background="#33b5e5"
+	        android:paddingBottom="4dp"
+	        android:paddingTop="4dp"
+	        android:textColor="#fff" />
+	    
+	</android.support.v4.view.ViewPager>
+	
+    <fragment
+        android:id="@+id/fragmentNewTodo"
+        android:name="com.lumpofcode.dotwo.newtodo.NewTodoFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:background="#33b5e5"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp"
-        android:textColor="#fff" />
-
-</android.support.v4.view.ViewPager>
+        android:layout_alignParentBottom="true"
+        tools:layout="@layout/fragment_new_todo" 
+        />
+	    
+</RelativeLayout>

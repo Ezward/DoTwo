@@ -2,12 +2,6 @@ package com.lumpofcode.dotwo.todoactivity;
 
 import java.util.Locale;
 
-import com.lumpofcode.dotwo.R;
-import com.lumpofcode.dotwo.R.id;
-import com.lumpofcode.dotwo.R.layout;
-import com.lumpofcode.dotwo.R.menu;
-import com.lumpofcode.dotwo.R.string;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -18,7 +12,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import com.lumpofcode.dotwo.R;
+import com.lumpofcode.dotwo.model.TaskLists;
+import com.lumpofcode.dotwo.todolist.TodoListFragment;
+import com.lumpofcode.dotwo.todolist.TodoListFragment.TodoListType;
 
 public class TodoActivity extends FragmentActivity
 {
@@ -76,11 +74,15 @@ public class TodoActivity extends FragmentActivity
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			Fragment fragment = new DummySectionFragment();
-			Bundle args = new Bundle();
-			args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-			fragment.setArguments(args);
-			return fragment;
+			if(0 == position)
+			{
+				return newTodayTodoList();
+			}
+			if(1 == position)
+			{
+				return newAllTodoList();
+			}
+			return newSharedTodoList();
 		}
 
 		@Override
@@ -88,6 +90,41 @@ public class TodoActivity extends FragmentActivity
 		{
 			// Show 3 total pages.
 			return 3;
+		}
+		
+		private Fragment newTodayTodoList()
+		{
+			// getItem is called to instantiate the fragment for the given page.
+			// Return a DummySectionFragment (defined as a static inner class
+			// below) with the page number as its lone argument.
+			Fragment fragment = new TodoListFragment();
+			Bundle args = new Bundle();
+			args.putInt(TodoListFragment.ARG_TODO_LIST_TYPE, TodoListType.TODAY.ordinal());
+			args.putString(TodoListFragment.ARG_TODO_LIST_NAME, TaskLists.getTaskListByIndex(0).name());
+			fragment.setArguments(args);
+			return fragment;
+		}
+		private Fragment newSharedTodoList()
+		{
+			// getItem is called to instantiate the fragment for the given page.
+			// Return a DummySectionFragment (defined as a static inner class
+			// below) with the page number as its lone argument.
+			Fragment fragment = new TodoListFragment();
+			Bundle args = new Bundle();
+			args.putInt(TodoListFragment.ARG_TODO_LIST_TYPE, TodoListType.SHARED.ordinal());
+			fragment.setArguments(args);
+			return fragment;
+		}
+		private Fragment newAllTodoList()
+		{
+			// getItem is called to instantiate the fragment for the given page.
+			// Return a DummySectionFragment (defined as a static inner class
+			// below) with the page number as its lone argument.
+			Fragment fragment = new TodoListFragment();
+			Bundle args = new Bundle();
+			args.putInt(TodoListFragment.ARG_TODO_LIST_TYPE, TodoListType.ALL.ordinal());
+			fragment.setArguments(args);
+			return fragment;
 		}
 
 		@Override
