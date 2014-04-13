@@ -3,17 +3,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    >
 
-    <fragment
-        android:id="@+id/fragmentTodoList"
-        android:name="com.lumpofcode.dotwo.todolist.TodoListFragment"
+    <!-- sort bar -->
+	<LinearLayout 
+	    android:id="@+id/panelSortBar"
+	    android:orientation="horizontal" 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/fragmentNewTodo"
-        tools:layout="@layout/fragment_todo_list" 
-        />
+	    >
+	
+	    <ToggleButton
+	        android:id="@+id/toggleSortByPriority"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:textOn=" ! " 
+	        android:textOff=" ! " 
+	        />
+	
+	    <ToggleButton
+	        android:id="@+id/toggleSortByImportance"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:textOn=" ☆ " 
+	        android:textOff=" ☆ " 
+	        />
+	
+	    <ToggleButton
+	        android:id="@+id/toggleSortByDueDate"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:textOn=" ☀ " 
+	        android:textOff=" ☀ " 
+	        />
+	
+	</LinearLayout>
+    
+    <!-- task list -->
+    <ListView
+        android:id="@+id/listTodo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/panelSortBar"
+        android:layout_above="@+id/panelNewTodo"
+        tools:listitem="@layout/todo_item" >
 
-
+    </ListView>
+    
+    <!-- new task -->
+	<LinearLayout 
+	    android:id="@+id/panelNewTodo"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:orientation="horizontal" >
+	
+	    <EditText
+	        android:id="@+id/editNewTodo"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:ems="10" 
+	        android:inputType="text"
+	        >
+	
+	    </EditText>
+	
+	    <Button
+	        android:id="@+id/buttonNewTodo"
+	        style="?android:attr/buttonStyleSmall"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/button_new_todo" />
+	
+	</LinearLayout>
+    
 </RelativeLayout>

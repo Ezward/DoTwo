@@ -30,13 +30,5 @@
 	    
 	</android.support.v4.view.ViewPager>
 	
-    <fragment
-        android:id="@+id/fragmentNewTodo"
-        android:name="com.lumpofcode.dotwo.newtodo.NewTodoFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        tools:layout="@layout/fragment_new_todo" 
-        />
 	    
 </RelativeLayout>

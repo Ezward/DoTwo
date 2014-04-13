@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    >
+    
+    <!-- sort bar -->
+	<LinearLayout 
+	    android:id="@+id/panelSortBarToday"
+	    android:orientation="horizontal" 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+	    >
+	
+	    <ToggleButton
+	        android:id="@+id/toggleSortByPriorityToday"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:textOn=" ! " 
+	        android:textOff=" ! " 
+	        />
+	
+	    <ToggleButton
+	        android:id="@+id/toggleSortByImportanceToday"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:textOn=" ☆ " 
+	        android:textOff=" ☆ " 
+	        />
+	
+	    <ToggleButton
+	        android:id="@+id/toggleSortByDueDateToday"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:textOn=" ☀ " 
+	        android:textOff=" ☀ " 
+	        />
+	
+	</LinearLayout>
+    
+    <!-- task list -->
+    <ListView
+        android:id="@+id/listTodoToday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/panelSortBarToday"
+        />
+    
+</RelativeLayout>

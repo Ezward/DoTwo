@@ -8,15 +8,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.lumpofcode.dotwo.R;
 import com.lumpofcode.dotwo.model.TaskLists;
+import com.lumpofcode.dotwo.today.TodayFragment;
 import com.lumpofcode.dotwo.todolist.TodoListFragment;
 import com.lumpofcode.dotwo.todolist.TodoListFragment.TodoListType;
+import com.lumpofcode.dotwo.todopanel.TodoPanelFragment;
 
 public class TodoActivity extends FragmentActivity
 {
@@ -97,7 +96,7 @@ public class TodoActivity extends FragmentActivity
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			Fragment fragment = new TodoListFragment();
+			Fragment fragment = new TodayFragment();
 			Bundle args = new Bundle();
 			args.putInt(TodoListFragment.ARG_TODO_LIST_TYPE, TodoListType.TODAY.ordinal());
 			args.putString(TodoListFragment.ARG_TODO_LIST_NAME, TaskLists.getTaskListByIndex(0).name());
@@ -109,7 +108,7 @@ public class TodoActivity extends FragmentActivity
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			Fragment fragment = new TodoListFragment();
+			Fragment fragment = new TodoPanelFragment();
 			Bundle args = new Bundle();
 			args.putInt(TodoListFragment.ARG_TODO_LIST_TYPE, TodoListType.SHARED.ordinal());
 			fragment.setArguments(args);
@@ -120,7 +119,7 @@ public class TodoActivity extends FragmentActivity
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
-			Fragment fragment = new TodoListFragment();
+			Fragment fragment = new TodoPanelFragment();
 			Bundle args = new Bundle();
 			args.putInt(TodoListFragment.ARG_TODO_LIST_TYPE, TodoListType.ALL.ordinal());
 			fragment.setArguments(args);
@@ -134,36 +133,13 @@ public class TodoActivity extends FragmentActivity
 			switch (position)
 			{
 				case 0:
-					return getString(R.string.title_section1).toUpperCase(l);
+					return "Today";		//getString(R.string.title_section1).toUpperCase(l);
 				case 1:
-					return getString(R.string.title_section2).toUpperCase(l);
+					return "Groceries";	//getString(R.string.title_section2).toUpperCase(l);
 				case 2:
-					return getString(R.string.title_section3).toUpperCase(l);
+					return "Work";		// getString(R.string.title_section3).toUpperCase(l);
 			}
 			return null;
 		}
 	}
-
-	/**
-	 * A dummy fragment representing a section of the app, but that simply displays dummy text.
-	 */
-	public static class DummySectionFragment extends Fragment
-	{
-		/**
-		 * The fragment argument representing the section number for this fragment.
-		 */
-		public static final String	ARG_SECTION_NUMBER	= "section_number";
-
-		public DummySectionFragment()
-		{
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-		{
-			View rootView = inflater.inflate(R.layout.fragment_todo_list, container, false);
-			return rootView;
-		}
-	}
-
 }

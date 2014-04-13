@@ -3,6 +3,8 @@ package com.lumpofcode.dotwo.app;
 import android.app.Application;
 
 import com.lumpofcode.dotwo.model.Task;
+import com.lumpofcode.dotwo.model.TaskList;
+import com.lumpofcode.dotwo.model.TaskLists;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -20,13 +22,13 @@ public class DoTwoApplication extends Application
 		// register our models
 		ParseObject.registerSubclass(Task.class);
 
-//		//
-//		// TODO: remove this test
-//		//
-//		// setup some tasks in the singleton to test the views
-//		TaskList theTaskList = TaskLists.newTaskList("testList");
-//		theTaskList.newTask("testTask");
-//		theTaskList.newTask("anotherTestTask");
+		//
+		// TODO: remove this test
+		//
+		// setup some tasks in the singleton to test the views
+		TaskList theTaskList = TaskLists.newTaskList("testList");
+		theTaskList.newTask("testTask");
+		theTaskList.newTask("anotherTestTask");
 //		
 //		try
 //		{
