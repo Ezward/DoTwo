@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+	<EditText
+		android:id="@+id/editListName"
+		android:layout_width="match_parent"  
+		android:layout_height="wrap_content" 
+		android:inputType="textMultiLine"
+		android:maxLength="140"
+		android:imeOptions="actionDone" 
+		/>
+	
+	<Button 
+	    android:id="@+id/okListName"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/editListName"
+	    android:layout_alignRight="@+id/editListName"
+	    android:text="@string/button_ok_new_list"
+	    />
+    
+</RelativeLayout>

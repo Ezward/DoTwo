@@ -21,14 +21,20 @@ public class DoTwoApplication extends Application
 
 		// register our models
 		ParseObject.registerSubclass(Task.class);
+		
+		//
+		// load the task lists
+		//
 
 		//
-		// TODO: remove this test
+		// HACK : create a few lists for testing
 		//
-		// setup some tasks in the singleton to test the views
-		TaskList theTaskList = TaskLists.newTaskList("testList");
-		theTaskList.newTask("testTask");
-		theTaskList.newTask("anotherTestTask");
+//		TaskLists.newTaskList("home").newTask("Mow the lawn");
+//		TaskLists.newTaskList("work").newTask("Finish project");
+//		TaskList theGroceryList = TaskLists.newTaskList("groceries");
+//		theGroceryList.newTask("Buy milk");
+//		theGroceryList.newTask("Buy fig newtons (tm)");
+		
 //		
 //		try
 //		{

@@ -34,7 +34,7 @@ public class TaskListAdapter extends ArrayAdapter<Task>
 		}
 		
 		// fill in the view
-		final Task theTask = getItem(position);
+		final Task theTask = this.getItem(position);
 		final TextView theNameView = (TextView)theItemView.findViewById(R.id.textTask);
 		theNameView.setText(theTask.name());
 		

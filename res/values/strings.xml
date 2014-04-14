@@ -2,11 +2,20 @@
 <resources>
 
     <string name="app_name">DoTwo</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-    <string name="label_new_todo">Add</string>
+    
+    <!-- action bar -->
+    <string name="action_new_list">New List</string>
+    <string name="action_choose_list">Choose List</string>
+    
+    <!-- new task fragment -->
     <string name="button_new_todo">Add</string>
-
+    
+    <!-- today fragment -->
+    <string name="Today">Today</string>
+    
+    <!-- new list dialog -->
+    <string name="button_ok_new_list">OK</string>
+    <string name="title_new_list_dialog">New List</string>
+    <string name="msg_list_already_exists">You already have a list with that name.</string>
+    
 </resources>

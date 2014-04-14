@@ -26,7 +26,7 @@ import com.parse.ParseObject;
 public class TaskList
 {
 	private static final String PARSE_CLASS = "TaskList";
-	private static final String TASK_LIST_NAME = "TASK_LIST_NAME";
+	public static final String TASK_LIST_NAME = "TASK_LIST_NAME";
 	private static final String SHARED_BY = "SHARED_BY";
 	
 	private ArrayList<Task> _tasks;
@@ -225,9 +225,15 @@ public class TaskList
 	}
 		
 	
+	/**
+	 * Create a new ArrayAdapter attached to the task list
+	 * 
+	 * @param context
+	 * @param theItemLayoutId
+	 * @return
+	 */
 	public TaskListAdapter newTaskListAdapter(final Context context, final int theItemLayoutId)
 	{
-		// OOPS: there is no ArrayList<Task> available for the adapter!!!
 		return new TaskListAdapter(context, theItemLayoutId, _tasks);
 	}
 	
