@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <!-- TaskList list -->
+    <ListView
+        android:id="@+id/listTaskList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/panelNewTaskList"
+        >
+
+    </ListView>
+    
+    <!-- new tasklist -->
+	<LinearLayout 
+	    android:id="@+id/panelNewTaskList"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:orientation="horizontal" 
+	    >
+	
+	    <EditText
+	        android:id="@+id/editNewTaskList"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:ems="10" 
+	        android:inputType="text"
+	        >
+	
+	    </EditText>
+	
+	    <Button
+	        android:id="@+id/buttonNewTaskList"
+	        style="?android:attr/buttonStyleSmall"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/button_new_takslist" 
+	        android:enabled="false"
+	        />
+	
+	</LinearLayout>
+    
+</RelativeLayout>

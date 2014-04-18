@@ -8,7 +8,7 @@
     <string name="action_choose_list">Choose List</string>
     
     <!-- new task fragment -->
-    <string name="button_new_todo">Add</string>
+    <string name="button_new_todo">+</string>
     
     <!-- today fragment -->
     <string name="Today">Today</string>
@@ -18,4 +18,8 @@
     <string name="title_new_list_dialog">New List</string>
     <string name="msg_list_already_exists">You already have a list with that name.</string>
     
+    <!-- TaskLists fragment -->
+    <string name="template_list_status">{LIST_SIZE} tasks</string>
+    <string name="button_new_takslist">+</string>
+    <string name="title_tasklists">Your Lists</string>
 </resources>

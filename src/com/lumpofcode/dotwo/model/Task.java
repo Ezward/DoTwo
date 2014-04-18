@@ -12,6 +12,7 @@ public final class Task extends ParseObject
 	/* package private */ static final String LIST = "LIST";
 	/* package private */ static final String NAME = "NAME";
 	private static final String IS_DONE = "IS_DONE";
+	private static final String IS_TODAY = "IS_TODAY";
 	
 	// TODO: add other fields
 	
@@ -52,6 +53,16 @@ public final class Task extends ParseObject
 	public void isDone(boolean done)
 	{
 		this.put(IS_DONE, done);
+	}
+
+	public boolean isToday()
+	{
+		return this.getBoolean(IS_TODAY);
+	}
+
+	public void isToday(boolean today)
+	{
+		this.put(IS_TODAY, today);
 	}
 
 	/**

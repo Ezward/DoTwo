@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -16,27 +17,34 @@ import com.lumpofcode.dotwo.model.TaskLists;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment.NewListDialogListener;
 import com.lumpofcode.dotwo.today.TodayFragment;
+import com.lumpofcode.dotwo.todolists.OnAddTaskList;
+import com.lumpofcode.dotwo.todolists.OnTaskListClickListener;
+import com.lumpofcode.dotwo.todolists.TaskListsFragment;
 import com.lumpofcode.dotwo.todopanel.TodoPanelFragment;
 
-public class TodoActivity extends FragmentActivity implements NewListDialogListener
+public class TodoActivity extends FragmentActivity implements NewListDialogListener, OnTaskListClickListener, OnAddTaskList
 {
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
 	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which will keep every loaded fragment in memory. If this becomes too memory intensive, it
 	 * may be best to switch to a {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	SectionsPagerAdapter	mSectionsPagerAdapter;
+	private SectionsPagerAdapter	mSectionsPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
-	ViewPager				mViewPager;
+	private ViewPager				mViewPager;
+	
+	private String _selectedTaskListName = null;
+	private TaskListsFragment _taskListsFragment = null;
+	private TodoPanelFragment _todoPanelFragment = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_todo);
+		setContentView(R.layout.activity_todo_split);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -45,7 +53,31 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mViewPager.setOnPageChangeListener(new OnPageChangeListener()
+		{
+			@Override
+			public void onPageScrollStateChanged(int arg0)
+			{
+				// TODO Auto-generated method stub
+				
+			}
 
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPageSelected(int position)
+			{
+				// null out the task list name
+				// and tell the adapter 
+				//_selectedTaskListName = null;
+			}
+			
+		});
 	}
 
 	@Override
@@ -87,6 +119,35 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 
 
 
+	@Override
+	public void onTaskListClick(final String theTaskListName)
+	{
+		if((null != theTaskListName) && !theTaskListName.isEmpty())
+		{
+			_selectedTaskListName = theTaskListName;
+			if(1 == mSectionsPagerAdapter.getCount())
+			{
+				// 
+				// create a new todo list
+				//
+				_todoPanelFragment = newTodoFragment(_selectedTaskListName);
+			}
+			else
+			{
+				//
+				// alter pre-existing todo list to show a different list
+				//
+				_todoPanelFragment.setTaskListByName(_selectedTaskListName);
+			}
+									
+			// TaskList was clicked, show the list
+			mSectionsPagerAdapter.notifyDataSetChanged();
+			mViewPager.setCurrentItem(1);
+		}
+	}
+
+
+
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the sections/tabs/pages.
 	 */
@@ -106,40 +167,21 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 			// below) with the page number as its lone argument.
 			if(0 == position)
 			{
-				return newTodayFragment();
+				return _taskListsFragment = newTaskListsFragment();
 			}
-			return newTodoFragment(TaskLists.getTaskListByIndex(position - 1).name(), position);
+			if(null == _todoPanelFragment)
+			{
+				_todoPanelFragment = newTodoFragment(_selectedTaskListName);				
+			}
+			return _todoPanelFragment;
 		}
 
 		@Override
 		public int getCount()
 		{
-			// Show 3 total pages.
-			return TaskLists.taskListCount() + 1;	// we have the Today list as well as others
+			return (null != _todoPanelFragment) ? 2 : 1;	// we have the TaskLists list plus each TaskList
 		}
 		
-		private Fragment newTodayFragment()
-		{
-			// getItem is called to instantiate the fragment for the given page.
-			// Return a DummySectionFragment (defined as a static inner class
-			// below) with the page number as its lone argument.
-			Fragment fragment = new TodayFragment();
-			Bundle args = new Bundle();
-			// TODO: pass args to the todo list
-			fragment.setArguments(args);
-			return fragment;
-		}
-		private Fragment newTodoFragment(final String theTaskListName, final int position)
-		{
-			// getItem is called to instantiate the fragment for the given page.
-			// Return a DummySectionFragment (defined as a static inner class
-			// below) with the page number as its lone argument.
-			Fragment fragment = new TodoPanelFragment();
-			Bundle args = new Bundle();
-			args.putString(TaskList.TASK_LIST_NAME, theTaskListName);
-			fragment.setArguments(args);
-			return fragment;
-		}
 
 		@Override
 		public CharSequence getPageTitle(int position)
@@ -148,13 +190,35 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 			switch (position)
 			{
 				case 0:
-					return getString(R.string.Today);		//getString(R.string.title_section1).toUpperCase(l);
+					return getString(R.string.title_tasklists);		
 				default:
-					return TaskLists.getTaskListByIndex(position - 1).name();
+					return _selectedTaskListName;
 			}
 		}
 	}
 	
+	private TaskListsFragment newTaskListsFragment()
+	{
+		// getItem is called to instantiate the fragment for the given page.
+		// Return a DummySectionFragment (defined as a static inner class
+		// below) with the page number as its lone argument.
+		TaskListsFragment fragment = new TaskListsFragment();
+		Bundle args = new Bundle();
+		// TODO: pass args to the todo list
+		fragment.setArguments(args);
+		return fragment;
+	}
+	private TodoPanelFragment newTodoFragment(final String theTaskListName)
+	{
+		// getItem is called to instantiate the fragment for the given page.
+		// Return a DummySectionFragment (defined as a static inner class
+		// below) with the page number as its lone argument.
+		TodoPanelFragment fragment = new TodoPanelFragment();
+		Bundle args = new Bundle();
+		args.putString(TaskList.TASK_LIST_NAME, theTaskListName);
+		fragment.setArguments(args);
+		return fragment;
+	}
 
 	@Override
 	public void onFinishNewListDialog(String inputText)
@@ -168,7 +232,11 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 			{
 				Toast.makeText(this, inputText, Toast.LENGTH_SHORT).show();
 				TaskList theTaskList = TaskLists.newTaskList(inputText);
-				
+				if(null != _taskListsFragment)
+				{
+					_taskListsFragment.notifyDataSetChanged();
+				}
+								
 				// tell the pager adapter that the data has changed
 				mSectionsPagerAdapter.notifyDataSetChanged();
 				
@@ -179,6 +247,12 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 				Toast.makeText(this, R.string.msg_list_already_exists, Toast.LENGTH_SHORT).show();
 			}
 		}
+	}
+
+	@Override
+	public void onAddTaskList(String theTaskListName)
+	{
+		onFinishNewListDialog(theTaskListName);
 	}
 
 }

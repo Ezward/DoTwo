@@ -1,10 +1,7 @@
 package com.lumpofcode.dotwo.todopanel;
 
-import com.lumpofcode.dotwo.R;
-import com.lumpofcode.dotwo.model.Task;
-import com.lumpofcode.dotwo.model.TaskList;
-import com.lumpofcode.dotwo.model.TaskLists;
-import com.lumpofcode.dotwo.todolist.TaskListAdapter;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -21,22 +18,22 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.lumpofcode.dotwo.R;
+import com.lumpofcode.dotwo.model.Task;
+import com.lumpofcode.dotwo.model.TaskList;
+import com.lumpofcode.dotwo.model.TaskLists;
+import com.lumpofcode.dotwo.todolist.TaskListAdapter;
+
 public class TodoPanelFragment extends Fragment
 {
-	private String _taskListName;
-	private TaskList _taskList;
-	private TaskListAdapter _listAdapter;
-	private Button _newButton;		//(Button)theView.findViewById(R.id.buttonNewTodo);
-	private EditText _editNewTodo;	// (EditText)theView.findViewById(R.id.editNewTodo);
+	// we hold a collection of list adapters mapped to list name
+	// so we can show any list (one at a time) with the same fragment.
+	private Map<String,TaskListAdapter> _listAdapters = new HashMap<String, TaskListAdapter>();
+	private TaskList _taskList;		// current task list
 	
-    @Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		
-		_taskListName = getArguments().getString(TaskList.TASK_LIST_NAME);   
-	}
-
+	private Button _newButton;		// (Button)theView.findViewById(R.id.buttonNewTodo);
+	private EditText _editNewTodo;	// (EditText)theView.findViewById(R.id.editNewTodo);
+	private ListView _listView;		// (ListView)theView.findViewById(R.id.listTodo);
 	
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -44,28 +41,54 @@ public class TodoPanelFragment extends Fragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
+		
 		final View theView = inflater.inflate(R.layout.fragment_todo_panel, container, false);
 		
-		// create and attach the task list adapter
-		_taskList = TaskLists.getTaskListByName(_taskListName);
-		_listAdapter = _taskList.newTaskListAdapter(theView.getContext(), R.layout.todo_item);
-		final ListView theListView = (ListView)theView.findViewById(R.id.listTodo);
-		theListView.setAdapter(_listAdapter);
+		// get the name of the initial list of tasks from the arguments
+		// that will be the first list we show.
+		final String theTaskListName = getArguments().getString(TaskList.TASK_LIST_NAME);
+		_taskList = TaskLists.getTaskListByName(theTaskListName);
+		_listAdapters.put(theTaskListName, _taskList.newTaskListAdapter(theView.getContext(), R.layout.todo_item));
+		_listView = (ListView)theView.findViewById(R.id.listTodo);
+		_listView.setAdapter(_listAdapters.get(theTaskListName));
 		
-		final LinearLayout theNewTodoPanel = (LinearLayout)theView.findViewById(R.id.panelNewTodo);
 		_newButton = (Button)theView.findViewById(R.id.buttonNewTodo);
-		_editNewTodo = (EditText)theView.findViewById(R.id.editNewTodo);
-		
 		_newButton.setOnClickListener(new NewTodoClickListener());
 		
 		//
 		// TextWatcher that enables the add button if the text in not empty
 		//
+		_editNewTodo = (EditText)theView.findViewById(R.id.editNewTodo);
 		_editNewTodo.addTextChangedListener(new EditTodoWatcher());
 		
 		return theView;
 	}
 	
+	/**
+	 * Make the list show a new set of tasks.
+	 * NOTE: this will cause a visual glitch, so it
+	 *       is best to do this while the list is not showing.
+	 * 
+	 * @param theTaskListName
+	 */
+	public void setTaskListByName(final String theTaskListName)
+	{
+		final TaskList theTaskList = TaskLists.getTaskListByName(theTaskListName);
+		if(null != theTaskList)
+		{
+			// see if we already have an adapter for this list
+			TaskListAdapter theAdapter = _listAdapters.get(theTaskListName);
+			if(null == theAdapter)
+			{
+				// create a new adapter for the list and add it to the map
+				theAdapter = theTaskList.newTaskListAdapter(getActivity(), R.layout.todo_item);
+				_listAdapters.put(theTaskListName, theAdapter);
+			}
+			_listView.setAdapter(theAdapter);
+			_taskList = theTaskList;
+		}
+	}
+		
 	/**
 	 * TextWatcher to enable the Add button if new todo name is not empty
 	 *
@@ -103,7 +126,7 @@ public class TodoPanelFragment extends Fragment
 				
 				_editNewTodo.getEditableText().clear();
 				_editNewTodo.clearFocus();
-				_listAdapter.notifyDataSetChanged();
+				_listAdapters.get(_taskList.name()).notifyDataSetChanged();
 				
 				//
 				// hide the keyboard

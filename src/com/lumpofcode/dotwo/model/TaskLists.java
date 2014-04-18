@@ -2,8 +2,12 @@ package com.lumpofcode.dotwo.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import android.content.Context;
+
+import com.lumpofcode.dotwo.todolists.OnTaskListClickListener;
+import com.lumpofcode.dotwo.todolists.TaskListsAdapter;
 
 /**
  * @author Ed
@@ -13,7 +17,7 @@ import java.util.Map;
  */
 public final class TaskLists
 {
-	private static final List<TaskList> _taskListArray = new ArrayList<TaskList>();
+	private static final ArrayList<TaskList> _taskListArray = new ArrayList<TaskList>();
 	private static final Map<String, TaskList> _taskListMappedByName = new HashMap<String, TaskList>();
 	
 	private TaskLists(){}	// private constructor enforces singleton.
@@ -77,4 +81,19 @@ public final class TaskLists
 		_taskListMappedByName.put(theName, theTaskList);
 	}
 	
+	/**
+	 * Factory to create a TaskListsAdapter and attach it to TaskLists
+	 * 
+	 * @param theContext
+	 * @param theItemLayout
+	 * @param theListener
+	 * @return
+	 */
+	public static final TaskListsAdapter newTaskListsAdapter(
+			final Context theContext,
+			final OnTaskListClickListener theListener)
+	{
+		return new TaskListsAdapter(theContext, _taskListArray, theListener);
+
+	}
 }
