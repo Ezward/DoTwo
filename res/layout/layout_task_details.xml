@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <EditText
+        android:id="@+id/editTaskNameDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:hint="@string/hint_task_name_detail"
+        android:inputType="text"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/textLabelTaskDescriptionDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/editTaskNameDetail"
+        android:text="@string/label_task_description_detail"
+        android:textAppearance="?android:attr/textAppearanceSmall" 
+        />
+
+    <EditText
+        android:id="@+id/editTaskDescriptionDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textLabelTaskDescriptionDetail"
+        android:hint="@string/hint_task_description_detail"
+        android:inputType="textImeMultiLine"
+        android:text="" />
+    
+    <TextView
+        android:id="@+id/textLabelTaskImportanceDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/editTaskDescriptionDetail"
+        android:text="@string/label_task_importance_detail"
+        android:textAppearance="?android:attr/textAppearanceSmall" 
+        />
+
+    <RatingBar
+        android:id="@+id/ratingTaskImportanceDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/textLabelTaskImportanceDetail"
+        android:layout_alignTop="@+id/textLabelTaskImportanceDetail"
+        android:layout_alignParentRight="true"
+        android:numStars="5"
+        android:stepSize="1"
+        android:rating="3"
+        android:maxHeight="16dp"
+        />
+    
+    <TextView
+        android:id="@+id/textLabelTaskDueDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/ratingTaskImportanceDetail"
+        android:text="@string/label_task_due_date_detail"
+        android:textAppearance="?android:attr/textAppearanceSmall" 
+        />
+
+    <TextView
+        android:id="@+id/textTaskDueDateDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/textLabelTaskDueDate"
+        android:layout_alignBaseline="@+id/textLabelTaskDueDate"
+        />
+    
+    <Button
+        android:id="@+id/buttonOkTaskDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        />
+    
+</RelativeLayout>

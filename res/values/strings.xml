@@ -22,4 +22,14 @@
     <string name="template_list_status">{LIST_SIZE} tasks</string>
     <string name="button_new_takslist">+</string>
     <string name="title_tasklists">Your Lists</string>
+    
+    <!-- Task Details Dialog  -->
+    <string name="hint_task_name_detail">Task Name</string>
+    <string name="hint_task_description_detail">Task Description</string>
+    <string name="label_task_description_detail">Description</string>
+    <string name="label_task_due_date_detail">Due : </string>
+    <string name="label_task_importance_detail">Importance</string>
+    <string name="msg_task_name_already_exists">A task with that name already exists.</string>
+    <string name="title_due_date_dialog">Due By</string>
+    
 </resources>

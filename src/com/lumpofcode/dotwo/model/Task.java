@@ -13,7 +13,10 @@ public final class Task extends ParseObject
 	/* package private */ static final String NAME = "NAME";
 	private static final String IS_DONE = "IS_DONE";
 	private static final String IS_TODAY = "IS_TODAY";
-	
+	private static final String DESCRIPTION = "DESCRIPTION";
+	private static final String IMPORTANCE = "IMPORTANCE";
+	private static final String DUE_DATE = "DUE_DATE";
+ 	
 	// TODO: add other fields
 	
 	/**
@@ -30,9 +33,9 @@ public final class Task extends ParseObject
 	}	
 	
 	
-	public TaskList list()
+	public String list()
 	{
-		return (TaskList)this.get("LIST");
+		return ((ParseObject)this.get("LIST")).getString(TaskList.TASK_LIST_NAME);
 	}
 	
 	public String id()
@@ -54,6 +57,27 @@ public final class Task extends ParseObject
 	{
 		this.put(IS_DONE, done);
 	}
+	
+	public String description()
+	{
+		return this.getString(DESCRIPTION);
+	}
+	
+	public void description(final String theDescription)
+	{
+		this.put(DESCRIPTION, theDescription);
+	}
+	
+	public int importance1to5()
+	{
+		return this.getInt(IMPORTANCE);
+	}
+	
+	public void importance1to5(final int theImportance1to5)
+	{
+		this.put(IMPORTANCE, Integer.valueOf(theImportance1to5));
+	}
+	
 
 	public boolean isToday()
 	{
@@ -63,6 +87,16 @@ public final class Task extends ParseObject
 	public void isToday(boolean today)
 	{
 		this.put(IS_TODAY, today);
+	}
+	
+	public long dueDateUTC()
+	{
+		return this.getLong(DUE_DATE);
+	}
+	
+	public void dueDateUTC(final long theDueDateUTC)
+	{
+		this.put(DUE_DATE, Long.valueOf(theDueDateUTC));
 	}
 
 	/**

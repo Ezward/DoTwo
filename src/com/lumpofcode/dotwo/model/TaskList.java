@@ -1,10 +1,14 @@
 package com.lumpofcode.dotwo.model;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.content.Context;
 
 import com.lumpofcode.dotwo.todolist.TaskListAdapter;
+import com.lumpofcode.dotwo.todolist.TaskListAdapter.TaskListListener;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 
@@ -30,6 +34,7 @@ public class TaskList
 	private static final String SHARED_BY = "SHARED_BY";
 	
 	private ArrayList<Task> _tasks;
+	private Map<String, Task> _taskMap;
 	private ParseObject _state;
 	
 	private TaskList () {};	// enforce use of factory constructor
@@ -51,6 +56,7 @@ public class TaskList
 
 		final TaskList theTaskList = new TaskList();
 		theTaskList._tasks = new ArrayList<Task>();
+		theTaskList._taskMap = new HashMap<String, Task>();
 		theTaskList._state = new ParseObject(PARSE_CLASS);
 		
 		theTaskList.name(theName);
@@ -75,6 +81,12 @@ public class TaskList
 		//
 		_setTask(theTask);
 		theTask.put(Task.LIST, _state);
+		
+		// 
+		// set defaults
+		// 
+		theTask.importance1to5(3);	// 3 stars
+		theTask.dueDateUTC(new Date().getTime() + (1000L * 60L * 60L * 24L * 7L));	// due in one week
 		
 		return theTask;
 	}
@@ -146,30 +158,27 @@ public class TaskList
 	 * @param theTaskName
 	 * @return
 	 */
-	public Task getTask(final String theTaskName)
+	public Task getTaskByName(final String theTaskName)
 	{
-		_validateTaskName(theTaskName);
-
-		final int theCount = _tasks.size();
-		for(int i = 0; i < theCount; i += 1)
+		return getTaskByIndex(getTaskIndex(theTaskName));
+	}
+	public Task getTaskByIndex(final int theIndex)
+	{
+		if((theIndex >= 0) && (theIndex < this.taskCount()))
 		{
-			final Task theCandidate = _tasks.get(i);
-			if(theTaskName.equals(theCandidate.name())) return theCandidate;
+			return _tasks.get(theIndex);
 		}
-		
 		return null;
 	}
 	private int getTaskIndex(final String theTaskName)
 	{
 		_validateTaskName(theTaskName);
-
-		final int theCount = _tasks.size();
-		for(int i = 0; i < theCount; i += 1)
-		{
-			final Task theCandidate = _tasks.get(i);
-			if(theTaskName.equals(theCandidate.name())) return i;
-		}
 		
+		final Task theTask = _taskMap.get(theTaskName);
+		if(null != theTask)
+		{
+			return _tasks.indexOf(theTask);
+		}
 		return -1;
 	}
 
@@ -191,6 +200,7 @@ public class TaskList
 			{
 				_tasks.add(theTask);
 			}
+			_taskMap.put(theTask.name(), theTask);
 		}
 		
 	}
@@ -218,6 +228,7 @@ public class TaskList
 	{
 		if((theIndex >= 0) && (theIndex < taskCount()))
 		{
+			_taskMap.remove(_tasks.get(theIndex).name());
 			_tasks.remove(theIndex);
 		}
 		
@@ -230,11 +241,15 @@ public class TaskList
 	 * 
 	 * @param context
 	 * @param theItemLayoutId
+	 * @param theListener
 	 * @return
 	 */
-	public TaskListAdapter newTaskListAdapter(final Context context, final int theItemLayoutId)
+	public TaskListAdapter newTaskListAdapter(
+			final Context context, 
+			final int theItemLayoutId, 
+			TaskListListener theListener)
 	{
-		return new TaskListAdapter(context, theItemLayoutId, _tasks);
+		return new TaskListAdapter(context, theItemLayoutId, _tasks, theListener);
 	}
 	
 }

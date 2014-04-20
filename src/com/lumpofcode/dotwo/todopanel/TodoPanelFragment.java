@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -13,18 +14,26 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.lumpofcode.dotwo.R;
 import com.lumpofcode.dotwo.model.Task;
 import com.lumpofcode.dotwo.model.TaskList;
 import com.lumpofcode.dotwo.model.TaskLists;
+import com.lumpofcode.dotwo.newtodo.TaskDetailsDialog;
 import com.lumpofcode.dotwo.todolist.TaskListAdapter;
+import com.lumpofcode.dotwo.todolist.TaskListAdapter.TaskListListener;
 
-public class TodoPanelFragment extends Fragment
+/**
+ * @author Ed
+ *
+ */
+public class TodoPanelFragment extends Fragment implements OnItemLongClickListener, TaskListListener
 {
 	// we hold a collection of list adapters mapped to list name
 	// so we can show any list (one at a time) with the same fragment.
@@ -35,6 +44,14 @@ public class TodoPanelFragment extends Fragment
 	private EditText _editNewTodo;	// (EditText)theView.findViewById(R.id.editNewTodo);
 	private ListView _listView;		// (ListView)theView.findViewById(R.id.listTodo);
 	
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		
+	}
+
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -48,9 +65,13 @@ public class TodoPanelFragment extends Fragment
 		// that will be the first list we show.
 		final String theTaskListName = getArguments().getString(TaskList.TASK_LIST_NAME);
 		_taskList = TaskLists.getTaskListByName(theTaskListName);
-		_listAdapters.put(theTaskListName, _taskList.newTaskListAdapter(theView.getContext(), R.layout.todo_item));
+		_listAdapters.put(
+				theTaskListName, 
+				_taskList.newTaskListAdapter(theView.getContext(), R.layout.todo_item, this));
 		_listView = (ListView)theView.findViewById(R.id.listTodo);
 		_listView.setAdapter(_listAdapters.get(theTaskListName));
+		_listView.setOnItemLongClickListener(this);
+
 		
 		_newButton = (Button)theView.findViewById(R.id.buttonNewTodo);
 		_newButton.setOnClickListener(new NewTodoClickListener());
@@ -81,13 +102,37 @@ public class TodoPanelFragment extends Fragment
 			if(null == theAdapter)
 			{
 				// create a new adapter for the list and add it to the map
-				theAdapter = theTaskList.newTaskListAdapter(getActivity(), R.layout.todo_item);
+				theAdapter = theTaskList.newTaskListAdapter(getActivity(), R.layout.todo_item, this);
 				_listAdapters.put(theTaskListName, theAdapter);
 			}
 			_listView.setAdapter(theAdapter);
 			_taskList = theTaskList;
 		}
 	}
+	
+	//
+	// handle when a checkbox on a task item is toggled
+	//
+	@Override
+	public void onTaskDoneCheckedChanged(
+			TaskListAdapter theAdapter,
+			String theTaskName,
+			boolean theSelectedState)
+	{
+		final Task theTask = _taskList.getTaskByName(theTaskName);
+		final TaskDetailsDialog theDialog = TaskDetailsDialog.newTaskDetailsDialog(theTask, this);
+		theDialog.show(getFragmentManager(), null);
+	}
+
+	@Override
+	public void onTaskTodayCheckedChanged(
+			TaskListAdapter theAdapter,
+			String theTaskName,
+			boolean theSelectedState)
+	{
+		// TODO: notify the today panel to sort and redraw itself
+	}
+
 		
 	/**
 	 * TextWatcher to enable the Add button if new todo name is not empty
@@ -142,6 +187,48 @@ public class TodoPanelFragment extends Fragment
 		}
 	}
 
+	//
+	// handle a long-click on task item in the list
+	//
+	@Override
+	public boolean onItemLongClick(AdapterView<?> theParent, View theView, int thePosition, long theId)
+	{
+		// TODO : confirm delete dialog
+		return false;
+	}
+	
+	@Override
+	public void onTaskClick(final TaskListAdapter theParent, final String theTaskName)
+	{
+		// we stashed the list name in the tag
+		final Task theTask = _taskList.getTaskByName(theTaskName);
+		final TaskDetailsDialog theDialog = TaskDetailsDialog.newTaskDetailsDialog(theTask, this);
+		theDialog.show(getFragmentManager(), null);
+		// NOTE: the dlalog will call onActivityResult() when it finishes with Ok
+		//       We will not get called at all if it is cancelled or if no changes are made
+	}
+
+	//
+	// called when a dialog finishes
+	//
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		// 
+		// handle the result from dialogs
+		//
+		if(requestCode == TaskDetailsDialog.TASK_DETAILS_DIALOG)
+		{
+			//
+			// a task has been edited
+			//
+			
+			// notify the adapter so it redraws the item
+			_listAdapters.get(_taskList.name()).notifyDataSetChanged();
+			
+			// TODO: save the task
+		}
+	}
 
 
 }

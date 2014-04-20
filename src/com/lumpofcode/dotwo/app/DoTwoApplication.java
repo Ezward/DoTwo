@@ -3,8 +3,6 @@ package com.lumpofcode.dotwo.app;
 import android.app.Application;
 
 import com.lumpofcode.dotwo.model.Task;
-import com.lumpofcode.dotwo.model.TaskList;
-import com.lumpofcode.dotwo.model.TaskLists;
 import com.parse.Parse;
 import com.parse.ParseObject;
 

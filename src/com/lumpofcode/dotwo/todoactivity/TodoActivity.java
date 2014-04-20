@@ -16,7 +16,6 @@ import com.lumpofcode.dotwo.model.TaskList;
 import com.lumpofcode.dotwo.model.TaskLists;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment.NewListDialogListener;
-import com.lumpofcode.dotwo.today.TodayFragment;
 import com.lumpofcode.dotwo.todolists.OnAddTaskList;
 import com.lumpofcode.dotwo.todolists.OnTaskListClickListener;
 import com.lumpofcode.dotwo.todolists.TaskListsFragment;

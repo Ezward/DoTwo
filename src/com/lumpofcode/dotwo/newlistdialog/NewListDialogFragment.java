@@ -39,6 +39,7 @@ public class NewListDialogFragment extends DialogFragment implements OnClickList
 
 	public NewListDialogFragment()
 	{
+		super();
 		// Empty constructor required for DialogFragment
 	}
 
