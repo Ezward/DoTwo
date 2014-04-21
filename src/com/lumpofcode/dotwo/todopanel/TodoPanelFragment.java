@@ -102,6 +102,14 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 			if(null == theAdapter)
 			{
 				// create a new adapter for the list and add it to the map
+				// TODO: THIS LEADS TO A NULL POINTER EXCEPTION IN inner init() functino
+				//       of the ArrayAdapter().  I'm guessing getActivity() returns null
+				//       because this method is called on the fragment either after it
+				//       is destroyed or before it is created.  The TodoActivity() is
+				//       holding onto the fragment rather than creating a new one
+				//       when it is asked to, so I think that this causes this method
+				//       to get called on a fragment that Android think's it has destroyed.
+				//
 				theAdapter = theTaskList.newTaskListAdapter(getActivity(), R.layout.todo_item, this);
 				_listAdapters.put(theTaskListName, theAdapter);
 			}
@@ -167,7 +175,8 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 				TodayList.addTask(theTask);	// add it to the today list in sort order
 											// this will notify the task list directly.
 				
-				// TODO : persist the task.
+				// persist the task.
+				theTask.save();
 				
 				_editNewTodo.getEditableText().clear();
 				_editNewTodo.clearFocus();

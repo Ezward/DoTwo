@@ -94,7 +94,7 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 		
 		// pass arguments to dialog instance
 		Bundle theArguments = new Bundle();
-		theArguments.putString(ARG_TASK_LIST_NAME, theTask.list());
+		theArguments.putString(ARG_TASK_LIST_NAME, theTask.list().name());
 		theArguments.putString(ARG_TASK_NAME, theTask.name());
 		theDialog.setArguments(theArguments);
 
@@ -197,7 +197,7 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 				if(null != this.getTargetFragment())
 				{
 					final Intent theData = new Intent();
-					theData.putExtra(ARG_TASK_LIST_NAME, _task.list());
+					theData.putExtra(ARG_TASK_LIST_NAME, _task.list().name());
 					theData.putExtra(ARG_TASK_NAME, _task.name());
 					this.getTargetFragment().onActivityResult(TASK_DETAILS_DIALOG, RESULT_OK, theData);
 				}
@@ -206,7 +206,7 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 					OnTaskModifiedListener listener = (OnTaskModifiedListener) getActivity();
 					
 					// tell the listener that we changed this task
-					listener.onTaskModified(_task.list(), _task.name());
+					listener.onTaskModified(_task.list().name(), _task.name());
 				}
 				dismiss();
 			}

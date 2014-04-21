@@ -1,6 +1,6 @@
 package com.lumpofcode.dotwo.todolist;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -69,7 +69,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 	public TaskListAdapter(
 			final Context context, 
 			final int theItemLayoutId, 
-			final ArrayList<Task> theTaskArray,
+			final List<Task> theTaskArray,
 			final TaskListListener theListener)
 	{
 		super(context, 0, theTaskArray);

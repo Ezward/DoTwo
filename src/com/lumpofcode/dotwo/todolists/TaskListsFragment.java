@@ -110,6 +110,7 @@ public class TaskListsFragment extends Fragment implements OnTaskListClickListen
 				// for now, just create a new todo directly
 				TaskList theTaskList = TaskLists.newTaskList(theListName);
 				// TODO : persist the tasklist.
+				theTaskList.save();
 				
 				_editNewListName.getEditableText().clear();
 				_editNewListName.clearFocus();

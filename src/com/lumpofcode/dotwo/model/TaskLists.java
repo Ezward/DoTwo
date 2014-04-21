@@ -2,10 +2,12 @@ package com.lumpofcode.dotwo.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
 
+import com.activeandroid.query.Select;
 import com.lumpofcode.dotwo.todolists.OnTaskListClickListener;
 import com.lumpofcode.dotwo.todolists.TaskListsAdapter;
 
@@ -21,6 +23,37 @@ public final class TaskLists
 	private static final Map<String, TaskList> _taskListMappedByName = new HashMap<String, TaskList>();
 	
 	private TaskLists(){}	// private constructor enforces singleton.
+	
+	/**
+	 * Load all the lists.
+	 * 
+	 * NOTE: this is a long running task that will block,
+	 *       so it should be used within an AsyncTask.
+	 * 
+	 * NOTE: any ArrayAdapters that are attached to the data
+	 *       should be notifiedDataChanged when this completes.
+	 */
+	public static final void load()
+	{
+		final List<TaskList> theLists = new Select()
+	        .from(TaskList.class)
+	        .execute();
+		
+		//
+		// add the to underlying array,
+		// so any ArrayAdapter does not get borked
+		//
+		_taskListArray.clear();
+		_taskListArray.addAll(theLists);
+		
+		//
+		// now iterate though and load the items for each list
+		//
+		for(TaskList theList : theLists)
+		{
+			theList.load();
+		}
+	}
 	
 	/**
 	 * Create a new TaskList in the collection of lists.
@@ -93,7 +126,16 @@ public final class TaskLists
 			final Context theContext,
 			final OnTaskListClickListener theListener)
 	{
-		return new TaskListsAdapter(theContext, _taskListArray, theListener);
-
+		return __adapter = new TaskListsAdapter(theContext, _taskListArray, theListener);
 	}
+	private static TaskListsAdapter __adapter = null;
+	
+	public static final void notifyDataSetChanged()
+	{
+		if(null != __adapter)
+		{
+			__adapter.notifyDataSetChanged();
+		}
+	}
+	
 }

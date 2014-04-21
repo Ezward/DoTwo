@@ -1,16 +1,18 @@
 package com.lumpofcode.dotwo.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 import com.lumpofcode.dotwo.todolist.TaskListAdapter;
 import com.lumpofcode.dotwo.todolist.TaskListAdapter.TaskListListener;
-import com.parse.ParseException;
-import com.parse.ParseObject;
 
 /**
  * @author Ed
@@ -27,17 +29,57 @@ import com.parse.ParseObject;
  * 		TaskList theTaskList = TaskLists.newTaskList("testList");
  *
  */
-public class TaskList
+@Table(name = "TaskLists")
+public class TaskList extends Model
 {
-	private static final String PARSE_CLASS = "TaskList";
 	public static final String TASK_LIST_NAME = "TASK_LIST_NAME";
 	private static final String SHARED_BY = "SHARED_BY";
 	
-	private ArrayList<Task> _tasks;
-	private Map<String, Task> _taskMap;
-	private ParseObject _state;
+	//
+	// public properties required by ActiveAndroid
+	//
+	@Column(name = "name")
+	public String _name;
 	
-	protected TaskList () {};	// enforce use of factory constructor
+	//
+	// private collection, populated with call to ActiveAndroid
+	//
+	private ArrayList<Task> __tasks = null;
+	private Map<String, Task> __taskMap = null;
+
+	//
+	// zero arg constructor required by ActiveAndroid
+	public TaskList() 
+	{
+	}	
+	
+	/**
+	 * Load the tasks for this list.
+	 * 
+	 * NOTE: This blocks while loading, so 
+	 *       it should be used in an AsyncTask.
+	 * 
+	 * NOTE: any ArrayAdapters that are attached to the data
+	 *       should be notifiedDataChanged when this completes.
+	 */
+	protected void load()
+	{
+		final List<Task> theTasks = new Select()
+	        .from(Task.class)
+	        .execute();
+	
+		//
+		// add the to underlying array,
+		// so any ArrayAdapter does not get borked
+		//
+		_tasks().clear();
+		_tasks().addAll(theTasks);
+		_taskMap().clear();
+		for(Task theTask : theTasks)
+		{
+			_taskMap().put(theTask.name(), theTask);
+		}
+	}
 	
 	/**
 	 * Package private factory for constructing TaskList.
@@ -55,9 +97,6 @@ public class TaskList
 		if((null == theName) || theName.isEmpty()) throw new IllegalArgumentException();
 
 		final TaskList theTaskList = new TaskList();
-		theTaskList._tasks = new ArrayList<Task>();
-		theTaskList._taskMap = new HashMap<String, Task>();
-		theTaskList._state = new ParseObject(PARSE_CLASS);
 		
 		theTaskList.name(theName);
 		return theTaskList;
@@ -73,73 +112,63 @@ public class TaskList
 	{
 		if((null == theName) || theName.isEmpty()) throw new IllegalArgumentException("Task cannot be constructed; theName is null or empty.");
 
-		final Task theTask = new Task();
-		theTask.put(Task.NAME, theName);
-		
 		// 
 		// add the task to the list and the list to the task
 		//
+		final Task theTask = new Task(this, theName);
 		_setTask(theTask);
-		theTask.put(Task.LIST, _state);
 		
 		// 
 		// set defaults
 		// 
 		theTask.importance1to5(3);	// 3 stars
-		theTask.dueDateUTC(new Date().getTime() + (1000L * 60L * 60L * 24L * 7L));	// due in one week
+		theTask.dueDateUTC(System.currentTimeMillis() + (1000L * 60L * 60L * 24L * 7L));	// due in one week
 		
 		return theTask;
 	}
-	
-	
-	public void save()
+		
+	private List<Task> _tasks()
 	{
-		try
+		if(null == __tasks)
 		{
-			_state.save();
+			// load task for this list from database
+			__tasks = getMany(Task.class, "TaskList");
 		}
-		catch (ParseException e)
+		return __tasks;
+	}
+	private Map<String, Task> _taskMap()
+	{
+		// first time, initialize the map
+		if(null == __taskMap)
 		{
-			e.printStackTrace();
-			throw new RuntimeException(e);
+			__taskMap = new HashMap<String, Task>();
+			for(Task theTask : _tasks())
+			{
+				__taskMap.put(theTask.name(), theTask);
+			}
 		}
+		return __taskMap;
+	}
+	public final int taskCount()
+	{
+		return _tasks().size();
 	}
 	
-	public String id()
-	{
-		return _state.getObjectId();
-	}
+
+	
 		
 	public String name()
 	{
-		return _state.getString(TASK_LIST_NAME);
+		return _name;
 	}
 	public void name(final String theName)
 	{
-		// TODO : validate structure
+		// TODO : validate structure of name
 		if((null == theName) || theName.isEmpty()) throw new IllegalArgumentException();
 		
-		_state.put(TASK_LIST_NAME, theName);
+		_name = theName;
 	}
-		
-	public String sharedBy()
-	{
-		return _state.getString(SHARED_BY);
-	}
-	public void sharedBy(final String theSharedBy)
-	{
-		if((null != theSharedBy) && !theSharedBy.isEmpty())
-		{
-			_state.put(SHARED_BY, theSharedBy);
-		}
-		else	// null or empty
-		{
-			// remove the field if it is null or empty
-			_state.remove(SHARED_BY);
-		}
-		
-	}
-	
+			
 	private final void _validateTaskName(final String theTaskName)
 	{
 		// don't allow reserved keys
@@ -147,10 +176,6 @@ public class TaskList
 		if(SHARED_BY.equals(theTaskName)) throw new IllegalArgumentException("getTask: use of reserved field name, " + SHARED_BY + ".");
 	}
 	
-	public final int taskCount()
-	{
-		return _tasks.size();
-	}
 
 	/**
 	 * Get a named task from the list of tasks.
@@ -160,13 +185,13 @@ public class TaskList
 	 */
 	public Task getTaskByName(final String theTaskName)
 	{
-		return getTaskByIndex(getTaskIndex(theTaskName));
+		return _taskMap().get(theTaskName);
 	}
 	public Task getTaskByIndex(final int theIndex)
 	{
 		if((theIndex >= 0) && (theIndex < this.taskCount()))
 		{
-			return _tasks.get(theIndex);
+			return _tasks().get(theIndex);
 		}
 		return null;
 	}
@@ -174,10 +199,11 @@ public class TaskList
 	{
 		_validateTaskName(theTaskName);
 		
-		final Task theTask = _taskMap.get(theTaskName);
+		// check the map to see if it exists before searching for it
+		final Task theTask = getTaskByName(theTaskName);
 		if(null != theTask)
 		{
-			return _tasks.indexOf(theTask);
+			return _tasks().indexOf(theTask);
 		}
 		return -1;
 	}
@@ -188,19 +214,20 @@ public class TaskList
 		{
 			// don't allow reserved keys
 			final String theTaskName = theTask.name();
-			if(TASK_LIST_NAME.equals(theTaskName)) throw new IllegalArgumentException("getTask: use of reserved field name, " + SHARED_BY + ".");
-			if(SHARED_BY.equals(theTaskName)) throw new IllegalArgumentException("getTask: use of reserved field name, " + SHARED_BY + ".");
+			_validateTaskName(theTaskName);
 			
-			final int i = getTaskIndex(theTask.name());
+			final int i = getTaskIndex(theTaskName);
 			if(i >= 0)
 			{
-				_tasks.set(i, theTask);
+				// overwrite existing task
+				_tasks().set(i, theTask);
 			}
 			else
 			{
-				_tasks.add(theTask);
+				// add new task
+				_tasks().add(theTask);
 			}
-			_taskMap.put(theTask.name(), theTask);
+			_taskMap().put(theTaskName, theTask);
 		}
 		
 	}
@@ -228,11 +255,15 @@ public class TaskList
 	{
 		if((theIndex >= 0) && (theIndex < taskCount()))
 		{
-			_taskMap.remove(_tasks.get(theIndex).name());
-			_tasks.remove(theIndex);
+			// remove from map, then list
+			final Task theTask = getTaskByIndex(theIndex);
+			_taskMap().remove(theTask.name());
+			_tasks().remove(theIndex);
+			
+			// persist
+			theTask.delete();	// remove from ActiveAndroid
 		}
 		
-		// TODO: PERSIST
 	}
 		
 	
@@ -249,7 +280,16 @@ public class TaskList
 			final int theItemLayoutId, 
 			TaskListListener theListener)
 	{
-		return new TaskListAdapter(context, theItemLayoutId, _tasks, theListener);
+		return __adapter = new TaskListAdapter(context, theItemLayoutId, _tasks(), theListener);
+	}
+	private TaskListAdapter __adapter = null;
+	
+	public void notifyDataSetChanged()
+	{
+		if(null != __adapter)
+		{
+			__adapter.notifyDataSetChanged();
+		}
 	}
 	
 }
