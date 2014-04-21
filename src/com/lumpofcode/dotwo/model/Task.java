@@ -3,11 +3,12 @@ package com.lumpofcode.dotwo.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.lumpofcode.date.TimeUtils;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
 @ParseClassName("Task")
-public final class Task extends ParseObject
+public final class Task extends ParseObject implements Comparable<Task>
 {
 	/* package private */ static final String LIST = "LIST";
 	/* package private */ static final String NAME = "NAME";
@@ -98,6 +99,35 @@ public final class Task extends ParseObject
 	{
 		this.put(DUE_DATE, Long.valueOf(theDueDateUTC));
 	}
+	
+	
+	public final int priority(final long theCurrentTime)
+	{
+		return this.importance1to5() * this.urgency1to5(theCurrentTime);
+	}
+	private final int urgency1to5(final long theCurrentTime)
+	{
+		final long theDaysToGo = TimeUtils.timeSpanInDays(dueDateUTC() - theCurrentTime);
+		if(theDaysToGo <= 1)
+		{
+			return 5;	// highest urgency;
+		}
+		if(theDaysToGo <= 2)
+		{
+			return 4;
+		}
+		if(theDaysToGo <= 5)
+		{
+			return 3;
+		}
+		if(theDaysToGo <= 10)
+		{
+			return 2;
+		}
+		return 1;
+	}
+	
+	
 
 	/**
 	 * Factory to construct a Task from a JSONObject
@@ -145,5 +175,12 @@ public final class Task extends ParseObject
 		}
 	}
 
-	
+
+	@Override
+	public int compareTo(Task that)
+	{
+		// default compare is by name
+		if(null == that) return 1;
+		return this.name().compareTo(that.name());
+	}
 }

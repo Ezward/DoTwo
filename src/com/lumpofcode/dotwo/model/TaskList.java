@@ -37,7 +37,7 @@ public class TaskList
 	private Map<String, Task> _taskMap;
 	private ParseObject _state;
 	
-	private TaskList () {};	// enforce use of factory constructor
+	protected TaskList () {};	// enforce use of factory constructor
 	
 	/**
 	 * Package private factory for constructing TaskList.

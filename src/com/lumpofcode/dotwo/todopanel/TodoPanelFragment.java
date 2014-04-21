@@ -15,7 +15,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +24,7 @@ import com.lumpofcode.dotwo.R;
 import com.lumpofcode.dotwo.model.Task;
 import com.lumpofcode.dotwo.model.TaskList;
 import com.lumpofcode.dotwo.model.TaskLists;
+import com.lumpofcode.dotwo.model.TodayList;
 import com.lumpofcode.dotwo.newtodo.TaskDetailsDialog;
 import com.lumpofcode.dotwo.todolist.TaskListAdapter;
 import com.lumpofcode.dotwo.todolist.TaskListAdapter.TaskListListener;
@@ -119,9 +119,7 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 			String theTaskName,
 			boolean theSelectedState)
 	{
-		final Task theTask = _taskList.getTaskByName(theTaskName);
-		final TaskDetailsDialog theDialog = TaskDetailsDialog.newTaskDetailsDialog(theTask, this);
-		theDialog.show(getFragmentManager(), null);
+		// TODO : notify today panel to redraw itself
 	}
 
 	@Override
@@ -159,19 +157,20 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 		@Override
 		public void onClick(View theView)
 		{
-			//
-			// TODO: open the task details for a new task
-			//
 			final String theTodoName = _editNewTodo.getEditableText().toString();
 			if(!theTodoName.isEmpty())
 			{
 				// for now, just create a new todo directly
 				Task theTask = _taskList.newTask(theTodoName);
+				_listAdapters.get(_taskList.name()).notifyDataSetChanged();	// tell our task list that it's changed
+				
+				TodayList.addTask(theTask);	// add it to the today list in sort order
+											// this will notify the task list directly.
+				
 				// TODO : persist the task.
 				
 				_editNewTodo.getEditableText().clear();
 				_editNewTodo.clearFocus();
-				_listAdapters.get(_taskList.name()).notifyDataSetChanged();
 				
 				//
 				// hide the keyboard
@@ -225,6 +224,7 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 			
 			// notify the adapter so it redraws the item
 			_listAdapters.get(_taskList.name()).notifyDataSetChanged();
+			TodayList.notifyDataChanged();	// tell the today list to redraw itself.
 			
 			// TODO: save the task
 		}
