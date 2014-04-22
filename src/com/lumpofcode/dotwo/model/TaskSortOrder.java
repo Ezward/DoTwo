@@ -20,13 +20,26 @@ public enum TaskSortOrder
 		return _comparator;
 	}
 	
+	private static final int compareDueDate(Task theTask, Task theOtherTask)
+	{
+		// sort in descending order (largest {most recent} date first}
+		if(theTask.dueDateUTC() < theOtherTask.dueDateUTC()) return 1;
+		if(theTask.dueDateUTC() > theOtherTask.dueDateUTC()) return -1;
+		return 0;
+	}
+	
 	private static final class CompareTaskPriority implements Comparator<Task>
 	{
 		@Override
 		public final int compare(Task theTask, Task theOtherTask)
 		{
+			// sort in descending order (highest priority to lowest priority)
 			final long today = TodayList.getToday();
-			return theTask.priority(today) - theOtherTask.priority(today);
+			if(theTask.priority(today) < theOtherTask.priority(today)) return 1;
+			if(theTask.priority(today) > theOtherTask.priority(today)) return -1;
+			
+			// same priority, then sort by due date
+			return TaskSortOrder.compareDueDate(theTask, theOtherTask);
 		}
 	}
 	
@@ -35,9 +48,8 @@ public enum TaskSortOrder
 		@Override
 		public final int compare(Task theTask, Task theOtherTask)
 		{
-			if(theTask.dueDateUTC() > theOtherTask.dueDateUTC()) return 1;
-			if(theTask.dueDateUTC() < theOtherTask.dueDateUTC()) return -1;
-			return 0;
+			// sort in descending order (largest {most recent} date first}
+			return TaskSortOrder.compareDueDate(theTask, theOtherTask);
 		}
 	};
 	
@@ -46,7 +58,10 @@ public enum TaskSortOrder
 		@Override
 		public final int compare(Task theTask, Task theOtherTask)
 		{
-			return theTask.importance1to5() - theOtherTask.importance1to5();
+			// sort in descending order (hightest importance to lowest importance)
+			if(theTask.importance1to5() < theOtherTask.importance1to5()) return 1;
+			if(theTask.importance1to5() > theOtherTask.importance1to5()) return 1;
+			return 0;
 		}
 	};
 	
@@ -55,6 +70,7 @@ public enum TaskSortOrder
 		@Override
 		public final int compare(Task theTask, Task theOtherTask)
 		{
+			// sort names in natural, ascending order
 			return theTask.name().compareTo(theOtherTask.name());
 		}
 	};

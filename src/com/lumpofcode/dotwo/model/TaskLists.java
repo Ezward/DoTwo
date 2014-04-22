@@ -46,11 +46,13 @@ public final class TaskLists
 		_taskListArray.clear();
 		_taskListArray.addAll(theLists);
 		
+		
 		//
 		// now iterate though and load the items for each list
 		//
 		for(TaskList theList : theLists)
 		{
+			_taskListMappedByName.put(theList.name(), theList);
 			theList.load();
 		}
 	}

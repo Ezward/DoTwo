@@ -66,6 +66,7 @@ public class TaskList extends Model
 	{
 		final List<Task> theTasks = new Select()
 	        .from(Task.class)
+	        .where("TaskList = ?", this.getId())
 	        .execute();
 	
 		//

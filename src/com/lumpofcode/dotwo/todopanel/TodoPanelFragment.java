@@ -94,27 +94,30 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 	 */
 	public void setTaskListByName(final String theTaskListName)
 	{
-		final TaskList theTaskList = TaskLists.getTaskListByName(theTaskListName);
-		if(null != theTaskList)
+		if(this.isResumed() && (null != this.getView()))
 		{
-			// see if we already have an adapter for this list
-			TaskListAdapter theAdapter = _listAdapters.get(theTaskListName);
-			if(null == theAdapter)
+			final TaskList theTaskList = TaskLists.getTaskListByName(theTaskListName);
+			if(null != theTaskList)
 			{
-				// create a new adapter for the list and add it to the map
-				// TODO: THIS LEADS TO A NULL POINTER EXCEPTION IN inner init() functino
-				//       of the ArrayAdapter().  I'm guessing getActivity() returns null
-				//       because this method is called on the fragment either after it
-				//       is destroyed or before it is created.  The TodoActivity() is
-				//       holding onto the fragment rather than creating a new one
-				//       when it is asked to, so I think that this causes this method
-				//       to get called on a fragment that Android think's it has destroyed.
-				//
-				theAdapter = theTaskList.newTaskListAdapter(getActivity(), R.layout.todo_item, this);
-				_listAdapters.put(theTaskListName, theAdapter);
+				// see if we already have an adapter for this list
+				TaskListAdapter theAdapter = _listAdapters.get(theTaskListName);
+				if(null == theAdapter)
+				{
+					// create a new adapter for the list and add it to the map
+					// TODO: THIS LEADS TO A NULL POINTER EXCEPTION IN inner init() functino
+					//       of the ArrayAdapter().  I'm guessing getActivity() returns null
+					//       because this method is called on the fragment either after it
+					//       is destroyed or before it is created.  The TodoActivity() is
+					//       holding onto the fragment rather than creating a new one
+					//       when it is asked to, so I think that this causes this method
+					//       to get called on a fragment that Android think's it has destroyed.
+					//
+					theAdapter = theTaskList.newTaskListAdapter(getActivity(), R.layout.todo_item, this);
+					_listAdapters.put(theTaskListName, theAdapter);
+				}
+				_listView.setAdapter(theAdapter);
+				_taskList = theTaskList;
 			}
-			_listView.setAdapter(theAdapter);
-			_taskList = theTaskList;
 		}
 	}
 	
@@ -228,14 +231,15 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 		if(requestCode == TaskDetailsDialog.TASK_DETAILS_DIALOG)
 		{
 			//
-			// a task has been edited
+			// a task has been edited, save it and notify the today list
 			//
+			final TaskList theList = TaskLists.getTaskListByName(data.getExtras().getString(TaskDetailsDialog.ARG_TASK_LIST_NAME));
+			final Task theTask = theList.getTaskByName(data.getExtras().getString(TaskDetailsDialog.ARG_TASK_NAME));
+			theTask.save();
 			
 			// notify the adapter so it redraws the item
 			_listAdapters.get(_taskList.name()).notifyDataSetChanged();
 			TodayList.notifyDataChanged();	// tell the today list to redraw itself.
-			
-			// TODO: save the task
 		}
 	}
 

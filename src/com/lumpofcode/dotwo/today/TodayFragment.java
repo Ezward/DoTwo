@@ -63,5 +63,5 @@ public class TodayFragment extends Fragment implements TaskListListener, OnItemL
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 }

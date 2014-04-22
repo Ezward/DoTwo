@@ -16,6 +16,29 @@ public final class TodayList
 	
 	private TodayList() {super();}	// private constructor to enforce singleton
 		
+	/**
+	 * Load the contents of the today list.
+	 * It does this by copying tasks from the other lists,
+	 * so those lists must be fully loaded first.
+	 * 
+	 * NOTE: this blocks, so it should be done within an AsyncTask
+	 * 
+	 * NOTE: any ArrayAdapters that are attached to the data
+	 *       should be notifiedDataChanged when this completes.
+	 */
+	public static final void load()
+	{
+		_todayList.clear();
+		for(int i = 0; i < TaskLists.taskListCount(); i += 1)
+		{
+			final TaskList theList = TaskLists.getTaskListByIndex(i);
+			for(int j = 0; j < theList.taskCount(); j += 1)
+			{
+				final Task theTask = theList.getTaskByIndex(j);
+				_todayList.add(theTask);	// adds end (NOT in sorted order)
+			}
+		}
+	}
 	public static final TaskSortOrder sortOrder()
 	{
 		return _sortOrder;
@@ -46,10 +69,17 @@ public final class TodayList
     {
     	if(null != theTask)
     	{
+	        _innerAddTask(theTask);
+	        notifyDataChanged();	// tell attached adapter that the data changed.
+    	}
+    }
+    public static void _innerAddTask(final Task theTask) 
+    {
+    	if(null != theTask)
+    	{
 	        int index = Collections.binarySearch(_todayList, theTask, sortOrder().comparator());
 	        if (index < 0) index = ~index;
 	        _todayList.add(index, theTask);
-	        notifyDataChanged();	// tell attached adapter that the data changed.
     	}
     }
 
@@ -60,14 +90,14 @@ public final class TodayList
 	{
 		if(0 == _today)
 		{
-			_today = TimeUtils.timeSpanInDays(System.currentTimeMillis());
+			_today = TimeUtils.timeSpanInDays(System.currentTimeMillis()) * TimeUtils.DAY_IN_MILLIS;
 		}
 		return _today;
 	}
 	
 	public static final long updateToday()
 	{
-		final long today = TimeUtils.timeSpanInDays(System.currentTimeMillis());
+		final long today = TimeUtils.timeSpanInDays(System.currentTimeMillis()) * TimeUtils.DAY_IN_MILLIS;
 		if(today > _today) 
 		{
 			_today = today;

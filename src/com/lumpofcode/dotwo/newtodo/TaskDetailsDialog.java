@@ -1,6 +1,7 @@
 package com.lumpofcode.dotwo.newtodo;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -125,15 +126,9 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 		_ratingImportance1to5 = (RatingBar)theView.findViewById(R.id.ratingTaskImportanceDetail);
 		_ratingImportance1to5.setRating(_task.importance1to5());
 		
-		final CharSequence theRelativeTime = DateUtils.getRelativeDateTimeString(
-		        theView.getContext(),		// Context 
-		        _task.dueDateUTC(),			// The time to display
-		        DateUtils.DAY_IN_MILLIS,	// The resolution 
-		        DateUtils.WEEK_IN_MILLIS,	// The maximum time at which the time will switch to default date instead of spans. 
-		        0); 						// Eventual flags
 		_textDueDate = (TextView)theView.findViewById(R.id.textTaskDueDateDetail);
-		_textDueDate.setText(theRelativeTime);
 		_textDueDate.setTag(Long.valueOf(_task.dueDateUTC()));	
+		_textDueDate.setText(getRelativeDateTimeString(theView.getContext(), _task.dueDateUTC()));
 		_textDueDate.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -144,19 +139,25 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 			    		theView.getContext(), 
 			            new DatePickerDialog.OnDateSetListener() 
 			    		{
-				            public void onDateSet(DatePicker view, int year,
-				                                                int monthOfYear, int dayOfMonth) 
+				            public void onDateSet(
+				            		DatePicker theView, 
+				            		int year,
+				                    int monthOfYear, 
+				                    int dayOfMonth) 
 				            {
 				            	
-			                       Time chosenDate = new Time();        
-			                       chosenDate.set(dayOfMonth, monthOfYear, year);
-			                       long theDateMs = chosenDate.toMillis(true);
-			                       
-			                       _textDueDate.setTag(Long.valueOf(theDateMs));
-			                       
-			                       CharSequence strDate = DateFormat.format("MMMM dd, yyyy", theDateMs);
-			                       Toast.makeText(view.getContext(), 
-			                            "Date picked: " + strDate, Toast.LENGTH_SHORT).show();
+							   Time chosenDate = new Time();        
+							   chosenDate.set(dayOfMonth, monthOfYear, year);
+							   long theDateMs = chosenDate.toMillis(true);
+							   
+							   // stash updated value in tag, so we can apply it when user hits ok
+							   // update text to show them what they just did.
+							   _textDueDate.setTag(Long.valueOf(theDateMs));
+							   _textDueDate.setText(getRelativeDateTimeString(theView.getContext(), theDateMs));
+							
+							   CharSequence strDate = DateFormat.format("MMMM dd, yyyy", theDateMs);
+							   Toast.makeText(theView.getContext(), 
+							        "Date picked: " + strDate, Toast.LENGTH_SHORT).show();
 				            }
 				        }, 
 				        (Long)_textDueDate.getTag(),
@@ -170,6 +171,16 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 		
 		return theView;
 	}
+
+	private final CharSequence getRelativeDateTimeString(Context theContext, long theDueDate)
+	{
+		return DateUtils.getRelativeDateTimeString(
+			theContext,					// Context 
+			theDueDate,					// The time to display
+	        DateUtils.DAY_IN_MILLIS,	// The resolution 
+	        DateUtils.WEEK_IN_MILLIS,	// The maximum time at which the time will switch to default date instead of spans. 
+	        0); 						// Eventual flags
+}
 
 	private final void onOK()
 	{

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.lumpofcode.dotwo.R;
 import com.lumpofcode.dotwo.model.TaskList;
 import com.lumpofcode.dotwo.model.TaskLists;
+import com.lumpofcode.dotwo.model.TodayList;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment.NewListDialogListener;
 import com.lumpofcode.dotwo.todolists.OnAddTaskList;
@@ -286,8 +287,8 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 			// load all the lists, then load the tasks for each list
 			//
 			TaskLists.load();
+			TodayList.load();	// must be done after other TaskLists are loaded
 			
-			// do loading operation here
 			return null;
 		}
 
@@ -306,6 +307,7 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 			{
 				TaskLists.getTaskListByIndex(i).notifyDataSetChanged();
 			}
+			TodayList.notifyDataChanged();
 			// TODO: here it would be good to have an eventbus
 			//       to do this notification
 		};
