@@ -14,6 +14,7 @@
         android:layout_alignRight="@+id/textTask"
         android:text="shared with Lisa"
         android:textAppearance="?android:attr/textAppearanceSmall" 
+    	android:clickable="false"
         />
 
     <TextView
@@ -24,6 +25,7 @@
         android:layout_below="@+id/textDetail"
         android:layout_toLeftOf="@+id/toggleToday"
         android:textAppearance="?android:attr/textAppearanceMedium" 
+    	android:clickable="false"
         />
 
     <ToggleButton

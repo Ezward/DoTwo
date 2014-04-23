@@ -77,6 +77,7 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 		
 		// tack on response code for calling fragment
 		theDialog.setTargetFragment(theCaller, TASK_DETAILS_DIALOG);
+//		theDialog.setStyle(STYLE_NO_TITLE, theDialog.getTheme());
 
 		return theDialog;
 	}
@@ -105,18 +106,20 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		final View theView = inflater.inflate(R.layout.layout_task_details, container, false);
-
 		// get the task from the arguments
 		final String theTaskListName = getArguments().getString(ARG_TASK_LIST_NAME);
 		final String theTaskName = getArguments().getString(ARG_TASK_NAME);
 		
 		final TaskList theTaskList = TaskLists.getTaskListByName(theTaskListName);
 		_task = theTaskList.getTaskByName(theTaskName);
+
+		// set the title
+		getDialog().setTitle(theTaskListName + ":" + theTaskName);
 		
 		//
 		// prefill the fields from the task
 		//
+		final View theView = inflater.inflate(R.layout.layout_task_details, container, false);
 		_editName = (EditText)theView.findViewById(R.id.editTaskNameDetail);
 		_editName.setText(_task.name());
 		

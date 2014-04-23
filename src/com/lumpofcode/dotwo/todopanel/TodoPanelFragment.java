@@ -127,6 +127,7 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 	@Override
 	public void onTaskDoneCheckedChanged(
 			TaskListAdapter theAdapter,
+			String theTaskListName,
 			String theTaskName,
 			boolean theSelectedState)
 	{
@@ -136,6 +137,7 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 	@Override
 	public void onTaskTodayCheckedChanged(
 			TaskListAdapter theAdapter,
+			String theTaskListName,
 			String theTaskName,
 			boolean theSelectedState)
 	{
@@ -209,7 +211,7 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 	}
 	
 	@Override
-	public void onTaskClick(final TaskListAdapter theParent, final String theTaskName)
+	public void onTaskClick(final TaskListAdapter theParent, final String theTaskListName, final String theTaskName)
 	{
 		// we stashed the list name in the tag
 		final Task theTask = _taskList.getTaskByName(theTaskName);

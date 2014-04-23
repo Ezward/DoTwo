@@ -3,6 +3,7 @@ package com.lumpofcode.dotwo.todolist;
 import java.util.List;
 
 import android.content.Context;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +19,9 @@ import com.lumpofcode.dotwo.model.Task;
 
 public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListener, OnCheckedChangeListener
 {
+	public static final int TASK_LIST_NAME = "TASK_LIST_NAME".hashCode();
+	public static final int TASK_NAME = "TASK_NAME".hashCode();
+	
 	private final int itemLayoutId;
 	private TaskListListener _listener;
 	
@@ -26,22 +30,26 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		/**
 		 * Handle click on a task.
 		 * 
-		 * @param theAdapter
-		 * @param theTaskName
+		 * @param theAdapter, the TaskListAdapter
+		 * @param theTaskListName the name of the list that owns the task
+		 * @param theTaskName, the name of the task
 		 */
 		public void onTaskClick(
 				final TaskListAdapter theAdapter, 
+				final String theTaskListName,
 				final String theTaskName);
 		
 		/**
 		 * Handle check changes on done toggle.
 		 * 
 		 * @param theAdapter, the TaskListAdapter
+		 * @param theTaskListName the name of the list that owns the task
 		 * @param theTaskName, the name of the task
 		 * @param theSelectedState, true if selected, false if not
 		 */
 		public void onTaskDoneCheckedChanged(
 				final TaskListAdapter theAdapter, 
+				final String theTaskListName,
 				final String theTaskName, 
 				final boolean theSelectedState);
 		
@@ -49,11 +57,13 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		 * Handle check changes on today toggle.
 		 * 
 		 * @param theAdapter, the TaskListAdapter
+		 * @param theTaskListName the name of the list that owns the task
 		 * @param theTaskName, the name of the task
 		 * @param theSelectedState, true if selected, false if not
 		 */
 		public void onTaskTodayCheckedChanged(
 				final TaskListAdapter theAdapter, 
+				final String theTaskListName,
 				final String theTaskName, 
 				final boolean theSelectedState);
 	}
@@ -87,6 +97,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		{
 			final LayoutInflater theInflator = LayoutInflater.from(getContext());
 			theItemView = theInflator.inflate(itemLayoutId, null);
+			theItemView.setTag(new SparseArray<String>());
 		}
 		theItemView.setOnClickListener(this);
 		
@@ -98,16 +109,55 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		ToggleButton theToggleDone = (ToggleButton)theItemView.findViewById(R.id.toggleDone);
 		theToggleDone.setSelected(theTask.isDone());
 		theToggleDone.setOnCheckedChangeListener(this);
-		theToggleDone.setTag(theTask.name());	// so we can get task name is onCheckedChanged
+		theToggleDone.setTag(theItemView.getTag());	// so we can get task name is onCheckedChanged
 		
 		ToggleButton theToggleToday = (ToggleButton)theItemView.findViewById(R.id.toggleToday);
 		theToggleToday.setSelected(theTask.isToday());
 		theToggleToday.setOnCheckedChangeListener(this);
-		theToggleToday.setTag(theTask.name());	// so we can get task name is onCheckedChanged
+		theToggleToday.setTag(theItemView.getTag());	// so we can get task name is onCheckedChanged
 		
 		// stash the task name in the item's tag so we can quickly look it up
-		theItemView.setTag(theTask.name());
+		// this will also copy it into the toggle buttons' tag
+		setFieldIntoTag(theItemView, TASK_LIST_NAME, theTask.list().name());
+		setFieldIntoTag(theItemView, TASK_NAME, theTask.name());
 		return theItemView;
+	}
+	
+	/**
+	 * This gets a field from the View's getTag() with the assumption
+	 * that the tag contains a SparseArray.
+	 * 
+	 * @param theView, the View whose getTag contains a SparseArray
+	 * @param theKey, the integer key to lookup in the SparseArray
+	 * @return the value or null if it is ot in the SparseArray
+	 *         or null if the getTag does not contain a SparseArray.
+	 */
+	public final Object getFieldFromTag(final View theView, final int theKey)
+	{
+		if(null != theView)
+		{
+			final Object theTag = theView.getTag();
+			if(theTag instanceof SparseArray)
+			{
+				@SuppressWarnings("unchecked")
+				final SparseArray<String> theArray = (SparseArray<String>)theTag;
+				return theArray.get(theKey);
+			}
+		}
+		return null;
+	}
+	public final void setFieldIntoTag(final View theView, final int theKey, final String theValue)
+	{
+		if(null != theView)
+		{
+			final Object theTag = theView.getTag();
+			if(theTag instanceof SparseArray)
+			{
+				@SuppressWarnings("unchecked")
+				final SparseArray<String> theArray = (SparseArray<String>)theTag;
+				theArray.put(theKey, theValue);
+			}
+		}
 	}
 	
 	@Override
@@ -115,7 +165,10 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 	{
 		if(null != _listener)
 		{
-			_listener.onTaskClick(this, (String)theView.getTag());
+			_listener.onTaskClick(
+					this, 
+					(String)this.getFieldFromTag(theView, TASK_LIST_NAME), 
+					(String)this.getFieldFromTag(theView, TASK_NAME));
 		}
 	}
 
@@ -130,7 +183,8 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 				{
 					_listener.onTaskDoneCheckedChanged(
 							this, 
-							(String)theButton.getTag(), 
+							(String)this.getFieldFromTag(theButton, TASK_LIST_NAME), 
+							(String)this.getFieldFromTag(theButton, TASK_NAME),
 							theSelectedState);
 					return;
 				}
@@ -138,7 +192,8 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 				{
 					_listener.onTaskTodayCheckedChanged(
 							this, 
-							(String)theButton.getTag(), 
+							(String)this.getFieldFromTag(theButton, TASK_LIST_NAME), 
+							(String)this.getFieldFromTag(theButton, TASK_NAME),
 							theSelectedState);
 					return;
 				}
