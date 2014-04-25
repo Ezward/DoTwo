@@ -45,13 +45,13 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		 * @param theAdapter, the TaskListAdapter
 		 * @param theTaskListName the name of the list that owns the task
 		 * @param theTaskName, the name of the task
-		 * @param theSelectedState, true if selected, false if not
+		 * @param theCheckedState, true if checked, false if not
 		 */
 		public void onTaskDoneCheckedChanged(
 				final TaskListAdapter theAdapter, 
 				final String theTaskListName,
 				final String theTaskName, 
-				final boolean theSelectedState);
+				final boolean theCheckedState);
 		
 		/**
 		 * Handle check changes on today toggle.
@@ -59,13 +59,13 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		 * @param theAdapter, the TaskListAdapter
 		 * @param theTaskListName the name of the list that owns the task
 		 * @param theTaskName, the name of the task
-		 * @param theSelectedState, true if selected, false if not
+		 * @param theCheckedState, true if selected, false if not
 		 */
 		public void onTaskTodayCheckedChanged(
 				final TaskListAdapter theAdapter, 
 				final String theTaskListName,
 				final String theTaskName, 
-				final boolean theSelectedState);
+				final boolean theCheckedState);
 	}
 	
 	/**
@@ -83,6 +83,10 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 			final TaskListListener theListener)
 	{
 		super(context, 0, theTaskArray);
+		
+		// adding and inserting into the list does not automatically call notifyDataSetChanged.  We do that ourselves.
+		this.setNotifyOnChange(false);	
+		
 		itemLayoutId = theItemLayoutId;
 		_listener = theListener;
 	}
@@ -106,13 +110,19 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		final TextView theNameView = (TextView)theItemView.findViewById(R.id.textTask);
 		theNameView.setText(theTask.name());
 		
+		//
+		// NOTE: setChecked() calls the onCheckChanged listener, so we make sure
+		//       that there is no listener when we call it to avoid unwanted callbacks
+		//
 		ToggleButton theToggleDone = (ToggleButton)theItemView.findViewById(R.id.toggleDone);
-		theToggleDone.setSelected(theTask.isDone());
+		theToggleDone.setOnCheckedChangeListener(null);	// avoid the onCheckedChange() that happens when setChecked() is called
+		theToggleDone.setChecked(theTask.isDone());
 		theToggleDone.setOnCheckedChangeListener(this);
 		theToggleDone.setTag(theItemView.getTag());	// so we can get task name is onCheckedChanged
 		
 		ToggleButton theToggleToday = (ToggleButton)theItemView.findViewById(R.id.toggleToday);
-		theToggleToday.setSelected(theTask.isToday());
+		theToggleToday.setOnCheckedChangeListener(null); // avoid the onCheckedChange() that happens when setChecked() is called
+		theToggleToday.setChecked(theTask.isToday());
 		theToggleToday.setOnCheckedChangeListener(this);
 		theToggleToday.setTag(theItemView.getTag());	// so we can get task name is onCheckedChanged
 		
@@ -120,6 +130,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		// this will also copy it into the toggle buttons' tag
 		setFieldIntoTag(theItemView, TASK_LIST_NAME, theTask.list().name());
 		setFieldIntoTag(theItemView, TASK_NAME, theTask.name());
+		
 		return theItemView;
 	}
 	
@@ -173,7 +184,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 	}
 
 	@Override
-	public void onCheckedChanged(CompoundButton theButton, boolean theSelectedState)
+	public void onCheckedChanged(CompoundButton theButton, boolean theCheckedState)
 	{
 		if(null != _listener)
 		{
@@ -185,7 +196,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 							this, 
 							(String)this.getFieldFromTag(theButton, TASK_LIST_NAME), 
 							(String)this.getFieldFromTag(theButton, TASK_NAME),
-							theSelectedState);
+							theCheckedState);
 					return;
 				}
 				case R.id.toggleToday:
@@ -194,7 +205,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 							this, 
 							(String)this.getFieldFromTag(theButton, TASK_LIST_NAME), 
 							(String)this.getFieldFromTag(theButton, TASK_NAME),
-							theSelectedState);
+							theCheckedState);
 					return;
 				}
 			}

@@ -35,9 +35,13 @@ public final class TodayList
 			for(int j = 0; j < theList.taskCount(); j += 1)
 			{
 				final Task theTask = theList.getTaskByIndex(j);
-				_todayList.add(theTask);	// adds end (NOT in sorted order)
+				if(theTask.isToday())
+				{
+					_todayList.add(theTask);	// adds end (NOT in sorted order)
+				}
 			}
 		}
+		sort();
 	}
 	public static final TaskSortOrder sortOrder()
 	{
@@ -50,14 +54,13 @@ public final class TodayList
 			// set order and do the sort
 			_sortOrder = theSortOrder;
 			sort();
+			notifyDataChanged();
 		}
 	}
 	
-	public static final void sort()
+	private static final void sort()
 	{
 		Collections.sort(_todayList, sortOrder().comparator());
-		
-		// TODO : after sorting is complete, notify other tasklists or new sort order
 	}
 	
     /**
@@ -69,20 +72,46 @@ public final class TodayList
     {
     	if(null != theTask)
     	{
-	        _innerAddTask(theTask);
-	        notifyDataChanged();	// tell attached adapter that the data changed.
+    		if(theTask.isToday())
+    		{
+		        _innerAddTask(_todayList, theTask);
+		        notifyDataChanged();	// tell attached adapter that the data changed.
+    		}
     	}
     }
-    public static void _innerAddTask(final Task theTask) 
+    private static void _innerAddTask(final ArrayList<Task> theList, final Task theTask) 
     {
     	if(null != theTask)
     	{
-	        int index = Collections.binarySearch(_todayList, theTask, sortOrder().comparator());
+	        int index = Collections.binarySearch(theList, theTask, sortOrder().comparator());
 	        if (index < 0) index = ~index;
-	        _todayList.add(index, theTask);
+	        if((index == theList.size()) || (theTask != theList.get(index)))
+	        {
+	        	// add it if it is not aleady there
+	        	theList.add(index, theTask);
+	        }
     	}
     }
-
+	
+    public static void removeTask(final Task theTask) 
+    {
+    	if(null != theTask)
+    	{
+			_innerRemoveTask(_todayList, theTask);
+	        notifyDataChanged();	// tell attached adapter that the data changed.
+    	}
+    }
+    private static void _innerRemoveTask(final ArrayList<Task> theList, final Task theTask) 
+    {
+    	if(null != theTask)
+    	{
+    		int index = theList.indexOf(theTask);
+    		if(index >= 0)
+    		{
+    			theList.remove(index);
+    		}
+    	}
+    }
 	
 
 	private static long _today = 0;
@@ -120,23 +149,36 @@ public final class TodayList
 	}
 	
 	/**
-	 * Create a new ArrayAdapter attached to the task list
+	 * Detach from the adapter.
+	 * 
+	 * @return the detached adapter or null if not adapter was attached.
+	 */
+	public static final TaskListAdapter detachAdapter()
+	{
+		final TaskListAdapter theAdapter = _adapter;
+		_adapter = null;
+		return theAdapter;
+	}
+	
+	/**
+	 * Construct a new ArrayAdapter attached to the task list
+	 * 
+	 * NOTE: The list must NOT be attached already.  To detach
+	 *       from a prior adapter, call detachAdapter().
 	 * 
 	 * @param context
 	 * @param theItemLayoutId
 	 * @param theListener
 	 * @return
 	 */
-	public static final TaskListAdapter taskListAdapter(
+	public static final TaskListAdapter attachAdapter(
 			final Context context, 
 			final int theItemLayoutId, 
 			TaskListListener theListener)
 	{
-		if(null == _adapter)
-		{
-			_adapter = new TaskListAdapter(context, theItemLayoutId, _todayList, theListener);
-		}
-		return _adapter;
+		if(null != _adapter) throw new IllegalStateException("TaskLists is already attached to an adapter.  Call detachAdapter detach from prior adapter.");
+		
+		return _adapter = new TaskListAdapter(context, theItemLayoutId, _todayList, theListener);
 	}
 	private static TaskListAdapter _adapter = null;
 	

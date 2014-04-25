@@ -6,7 +6,6 @@ import java.util.Map;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -14,8 +13,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -26,14 +23,14 @@ import com.lumpofcode.dotwo.model.TaskList;
 import com.lumpofcode.dotwo.model.TaskLists;
 import com.lumpofcode.dotwo.model.TodayList;
 import com.lumpofcode.dotwo.newtodo.TaskDetailsDialog;
+import com.lumpofcode.dotwo.todolist.AbstractTaskListFragment;
 import com.lumpofcode.dotwo.todolist.TaskListAdapter;
-import com.lumpofcode.dotwo.todolist.TaskListAdapter.TaskListListener;
 
 /**
  * @author Ed
  *
  */
-public class TodoPanelFragment extends Fragment implements OnItemLongClickListener, TaskListListener
+public class TodoPanelFragment extends AbstractTaskListFragment
 {
 	// we hold a collection of list adapters mapped to list name
 	// so we can show any list (one at a time) with the same fragment.
@@ -50,7 +47,33 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 	{
 		super.onCreate(savedInstanceState);
 		
+		//
+		// space to track lists
+		//
+		_listAdapters = new HashMap<String, TaskListAdapter>();
 	}
+
+	@Override
+	public void onDestroy()
+	{
+		// 
+		// detach lists from list adapters
+		//
+		if(null != _listAdapters)
+		{
+			for(String theTaskListName : _listAdapters.keySet())
+			{
+				final TaskList theList = TaskLists.getTaskListByName(theTaskListName);
+				theList.detachAdapter();
+			}
+			_listAdapters.clear();
+			_listAdapters = null;
+		}
+		
+		super.onDestroy();
+	}
+
+
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -67,10 +90,9 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 		_taskList = TaskLists.getTaskListByName(theTaskListName);
 		_listAdapters.put(
 				theTaskListName, 
-				_taskList.newTaskListAdapter(theView.getContext(), R.layout.todo_item, this));
+				_taskList.attachAdapter(theView.getContext(), R.layout.todo_item, this));
 		_listView = (ListView)theView.findViewById(R.id.listTodo);
 		_listView.setAdapter(_listAdapters.get(theTaskListName));
-		_listView.setOnItemLongClickListener(this);
 
 		
 		_newButton = (Button)theView.findViewById(R.id.buttonNewTodo);
@@ -85,6 +107,27 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 		return theView;
 	}
 	
+	
+	
+	@Override
+	public void onDestroyView()
+	{
+		//
+		// free-up anything we create in onCreateView()
+		//
+		if(null != _listAdapters)
+		{
+			_listAdapters.remove(_taskList.name());
+			_taskList.detachAdapter();	// detach the list adapter from the list
+			_taskList = null;
+			_listView = null;
+			_newButton = null;
+			_editNewTodo = null;
+		}
+
+		super.onDestroyView();
+	}
+
 	/**
 	 * Make the list show a new set of tasks.
 	 * NOTE: this will cause a visual glitch, so it
@@ -112,7 +155,7 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 					//       when it is asked to, so I think that this causes this method
 					//       to get called on a fragment that Android think's it has destroyed.
 					//
-					theAdapter = theTaskList.newTaskListAdapter(getActivity(), R.layout.todo_item, this);
+					theAdapter = theTaskList.attachAdapter(getActivity(), R.layout.todo_item, this);
 					_listAdapters.put(theTaskListName, theAdapter);
 				}
 				_listView.setAdapter(theAdapter);
@@ -121,29 +164,6 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 		}
 	}
 	
-	//
-	// handle when a checkbox on a task item is toggled
-	//
-	@Override
-	public void onTaskDoneCheckedChanged(
-			TaskListAdapter theAdapter,
-			String theTaskListName,
-			String theTaskName,
-			boolean theSelectedState)
-	{
-		// TODO : notify today panel to redraw itself
-	}
-
-	@Override
-	public void onTaskTodayCheckedChanged(
-			TaskListAdapter theAdapter,
-			String theTaskListName,
-			String theTaskName,
-			boolean theSelectedState)
-	{
-		// TODO: notify the today panel to sort and redraw itself
-	}
-
 		
 	/**
 	 * TextWatcher to enable the Add button if new todo name is not empty
@@ -201,47 +221,21 @@ public class TodoPanelFragment extends Fragment implements OnItemLongClickListen
 	}
 
 	//
-	// handle a long-click on task item in the list
-	//
-	@Override
-	public boolean onItemLongClick(AdapterView<?> theParent, View theView, int thePosition, long theId)
-	{
-		// TODO : confirm delete dialog
-		return false;
-	}
-	
-	@Override
-	public void onTaskClick(final TaskListAdapter theParent, final String theTaskListName, final String theTaskName)
-	{
-		// we stashed the list name in the tag
-		final Task theTask = _taskList.getTaskByName(theTaskName);
-		final TaskDetailsDialog theDialog = TaskDetailsDialog.newTaskDetailsDialog(theTask, this);
-		theDialog.show(getFragmentManager(), null);
-		// NOTE: the dlalog will call onActivityResult() when it finishes with Ok
-		//       We will not get called at all if it is cancelled or if no changes are made
-	}
-
-	//
 	// called when a dialog finishes
 	//
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
+		// AbstractTaskListFragment will handle the TodayList
+		super.onActivityResult(requestCode, resultCode, data);
+		
 		// 
 		// handle the result from dialogs
 		//
 		if(requestCode == TaskDetailsDialog.TASK_DETAILS_DIALOG)
 		{
-			//
-			// a task has been edited, save it and notify the today list
-			//
-			final TaskList theList = TaskLists.getTaskListByName(data.getExtras().getString(TaskDetailsDialog.ARG_TASK_LIST_NAME));
-			final Task theTask = theList.getTaskByName(data.getExtras().getString(TaskDetailsDialog.ARG_TASK_NAME));
-			theTask.save();
-			
 			// notify the adapter so it redraws the item
 			_listAdapters.get(_taskList.name()).notifyDataSetChanged();
-			TodayList.notifyDataChanged();	// tell the today list to redraw itself.
 		}
 	}
 

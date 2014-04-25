@@ -30,7 +30,7 @@ import com.lumpofcode.dotwo.todolist.TaskListAdapter.TaskListListener;
  *
  */
 @Table(name = "TaskLists")
-public class TaskList extends Model
+public final class TaskList extends Model
 {
 	public static final String TASK_LIST_NAME = "TASK_LIST_NAME";
 	private static final String SHARED_BY = "SHARED_BY";
@@ -269,23 +269,39 @@ public class TaskList extends Model
 		
 	
 	/**
-	 * Create a new ArrayAdapter attached to the task list
+	 * Detach the list from an adapter.
+	 * 
+	 * @return the previous adapter, or null if no adapter was attached.
+	 */
+	public final TaskListAdapter detachAdapter()
+	{
+		final TaskListAdapter theAdapter = __adapter;
+		__adapter = null;
+		return theAdapter;
+	}
+	
+	/**
+	 * Construct a new ArrayAdapter and attach it to the task list.
+	 * 
+	 * NOTE: the list must NOT be already attached to an adapter.
+	 *       Use detachAdapter() to detach from a prior adapter.
 	 * 
 	 * @param context
 	 * @param theItemLayoutId
 	 * @param theListener
 	 * @return
 	 */
-	public TaskListAdapter newTaskListAdapter(
+	public final TaskListAdapter attachAdapter(
 			final Context context, 
 			final int theItemLayoutId, 
 			TaskListListener theListener)
 	{
+		if(null != __adapter) throw new IllegalStateException("TaskList=$name is already attached to an adapter.  Call TaskList.detach() before attaching a new adapter.");
 		return __adapter = new TaskListAdapter(context, theItemLayoutId, _tasks(), theListener);
 	}
 	private TaskListAdapter __adapter = null;
 	
-	public void notifyDataSetChanged()
+	public final void notifyDataSetChanged()
 	{
 		if(null != __adapter)
 		{
