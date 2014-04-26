@@ -25,8 +25,9 @@ import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment.NewListDialogLis
 import com.lumpofcode.dotwo.today.TodayFragment;
 import com.lumpofcode.dotwo.todolists.OnAddTaskList;
 import com.lumpofcode.dotwo.todopanel.TodoPanelFragment;
+import com.lumpofcode.view.Pageable;
 
-public class TodoActivity extends FragmentActivity implements NewListDialogListener, OnAddTaskList
+public class TodoActivity extends FragmentActivity implements NewListDialogListener, OnAddTaskList, Pageable
 {
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
@@ -315,4 +316,21 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 		};
 	}
 
+	//
+	// Pageable interface
+	//
+	@Override
+	public int getPageCount()
+	{
+		return mSectionsPagerAdapter.getCount();
+	}
+
+	@Override
+	public void showPageByIndex(int position)
+	{
+		if((position >= 0) && (position < getPageCount()))
+		{
+			mViewPager.setCurrentItem(position);
+		}
+	}
 }
