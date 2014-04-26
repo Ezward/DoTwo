@@ -20,7 +20,6 @@ public class TodayFragment extends AbstractTaskListFragment
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		final View theView = inflater.inflate(R.layout.fragment_today, container, false);
-		
 		final TaskListAdapter theAdapter = TodayList.attachAdapter(theView.getContext(), R.layout.todo_item, this);
 		final ListView theListView = (ListView)theView.findViewById(R.id.listTodoToday);
 		theListView.setAdapter(theAdapter);
@@ -41,6 +40,17 @@ public class TodayFragment extends AbstractTaskListFragment
 		//
 		TodayList.detachAdapter();
 		super.onDestroyView();
+	}
+	
+	public void onDestroy()
+	{
+		//
+		// detach from our adapter
+		// NOTE: this may be called without onDestroyView being called
+		//       first because of our loading and the progress dialog.
+		//
+		TodayList.detachAdapter();
+		super.onDestroy();
 	}
 	
 }

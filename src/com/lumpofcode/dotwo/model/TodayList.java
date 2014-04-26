@@ -176,7 +176,7 @@ public final class TodayList
 			final int theItemLayoutId, 
 			TaskListListener theListener)
 	{
-		if(null != _adapter) throw new IllegalStateException("TaskLists is already attached to an adapter.  Call detachAdapter detach from prior adapter.");
+		if(null != _adapter) throw new IllegalStateException("TodayList is already attached to an adapter.  Call detachAdapter detach from prior adapter.");
 		
 		return _adapter = new TaskListAdapter(context, theItemLayoutId, _todayList, theListener);
 	}

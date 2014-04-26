@@ -12,6 +12,7 @@
     
     <!-- today fragment -->
     <string name="Today">Today</string>
+    <string name="title_today_list">Today</string>
     
     <!-- new list dialog -->
     <string name="button_ok_new_list">OK</string>
