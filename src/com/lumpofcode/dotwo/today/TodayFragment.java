@@ -20,9 +20,13 @@ public class TodayFragment extends AbstractTaskListFragment
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		final View theView = inflater.inflate(R.layout.fragment_today, container, false);
+		
+		final View theEmptyView = theView.findViewById(R.id.emptyTodayPanel);
+		
 		final TaskListAdapter theAdapter = TodayList.attachAdapter(theView.getContext(), R.layout.todo_item, this);
 		final ListView theListView = (ListView)theView.findViewById(R.id.listTodoToday);
 		theListView.setAdapter(theAdapter);
+		theListView.setEmptyView(theEmptyView);	// the list will manage showing/hiding the empty view.
 		
 		return theView;
 	}

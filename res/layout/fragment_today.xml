@@ -1,60 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
+    android:orientation="vertical"
     android:background="@color/today_background_color"
     >
     
-    <!-- sort bar -->
-	<LinearLayout 
-	    android:id="@+id/panelSortBarToday"
-	    android:orientation="horizontal" 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+	<FrameLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" 
 	    >
-	
-	    <ToggleButton
-	        android:id="@+id/toggleSortByPriorityToday"
+	    <!-- task list -->
+	    <ListView
+	        android:id="@+id/listTodoToday"
 	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:textOn=" ! " 
-	        android:textOff=" ! " 
+	        android:layout_height="match_parent"
+		    android:divider="@android:color/transparent"
+		    android:dividerHeight="@dimen/task_list_divider_height"
+		    android:layout_marginLeft="@dimen/task_list_margin_left"
+		    android:layout_marginRight="@dimen/task_list_margin_right"
+		    android:layout_marginTop="@dimen/task_list_margin_top"
+		    android:layout_marginBottom="@dimen/task_list_margin_bottom"
 	        />
-	
-	    <ToggleButton
-	        android:id="@+id/toggleSortByImportanceToday"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:textOn=" ☆ " 
-	        android:textOff=" ☆ " 
-	        />
-	
-	    <ToggleButton
-	        android:id="@+id/toggleSortByDueDateToday"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:textOn=" ☀ " 
-	        android:textOff=" ☀ " 
-	        />
-	
-	</LinearLayout>
+	    
+	    <!-- when task list is empty -->
+		<RelativeLayout 
+		    android:id="@+id/emptyTodayPanel"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent" 
+		    android:layout_marginLeft="@dimen/task_list_margin_left"
+		    android:layout_marginRight="@dimen/task_list_margin_right"
+		    android:layout_marginTop="@dimen/task_list_margin_top"
+		    android:layout_marginBottom="@dimen/task_list_margin_bottom"
+		    >
+		
+		    <TextView
+		        android:id="@+id/titleTodayEmpty"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_above="@+id/bodyTodayEmpty"
+		        android:text="@string/title_empty_today"
+		        android:textAppearance="?android:attr/textAppearanceLarge" 
+		        android:layout_centerHorizontal="true"
+		        />
+		    <TextView
+		        android:id="@+id/bodyTodayEmpty"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:layout_centerVertical="true"
+		        android:text="@string/body_empty_today"
+		        android:textAppearance="?android:attr/textAppearanceMedium" 
+		        />
+		    <TextView
+		        android:id="@+id/footerTodayEmpty"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/bodyTodayEmpty"
+		        android:text="@string/footer_empty_today"
+		        android:textAppearance="?android:attr/textAppearanceMedium" 
+		        android:layout_centerHorizontal="true"
+		        />
+		    		
+		    <Button
+		        android:id="@+id/buttonTodayEmpty"
+		        style="?android:attr/buttonStyleSmall"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/footerTodayEmpty"
+		        android:layout_centerHorizontal="true"
+		        android:text="@string/button_empty_today" 
+		        />
+		
+		</RelativeLayout>
+	</FrameLayout>    
     
-    <!-- task list -->
-    <ListView
-        android:id="@+id/listTodoToday"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/panelSortBarToday"
-	    android:divider="@android:color/transparent"
-	    android:dividerHeight="@dimen/task_list_divider_height"
-	    android:layout_marginLeft="@dimen/task_list_margin_left"
-	    android:layout_marginRight="@dimen/task_list_margin_right"
-	    android:layout_marginTop="@dimen/task_list_margin_top"
-	    android:layout_marginBottom="@dimen/task_list_margin_bottom"
-        />
-    
-</RelativeLayout>
+</LinearLayout>

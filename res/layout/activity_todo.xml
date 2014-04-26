@@ -11,6 +11,8 @@
 	    android:id="@+id/pager"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:layout_above="@+id/panelSortBarToday"
 	     >
 	
 	    <!--
@@ -30,5 +32,42 @@
 	    
 	</android.support.v4.view.ViewPager>
 	
-	    
+	<!-- sort bar -->
+	<LinearLayout 
+	    android:id="@+id/panelSortBarToday"
+	    android:orientation="horizontal" 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+	    >
+	
+	    <ToggleButton
+	        android:id="@+id/toggleSortByPriorityToday"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:textOn=" ! " 
+	        android:textOff=" ! " 
+	        />
+	
+	    <ToggleButton
+	        android:id="@+id/toggleSortByImportanceToday"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:textOn=" ☆ " 
+	        android:textOff=" ☆ " 
+	        />
+	
+	    <ToggleButton
+	        android:id="@+id/toggleSortByDueDateToday"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:textOn=" ☀ " 
+	        android:textOff=" ☀ " 
+	        />
+	
+	</LinearLayout>
+	
 </RelativeLayout>

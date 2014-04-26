@@ -209,9 +209,7 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 
 	private TodayFragment newTodayFragment()
 	{
-		// getItem is called to instantiate the fragment for the given page.
-		// Return a DummySectionFragment (defined as a static inner class
-		// below) with the page number as its lone argument.
+		
 		TodayFragment fragment = new TodayFragment();
 		Bundle args = new Bundle();
 		// TODO: pass args to the todo list

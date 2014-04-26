@@ -9,15 +9,42 @@ public enum TaskSortOrder
 	BY_IMPORTANCE(new CompareTaskImportance()),
 	BY_DUE_DATE(new CompareTaskDueDate());
 	
-	private final Comparator<Task> _comparator;
+	private final Comparator<Task> _innerComparator;
+	private final Comparator<Task> _doneComparator;
+	
 	private TaskSortOrder(final Comparator<Task> theComparator)
 	{
-		_comparator = theComparator;
+		_innerComparator = theComparator;
+		_doneComparator = new CompareDone();
 	}
 	
 	public final Comparator<Task> comparator()
 	{
-		return _comparator;
+		return _doneComparator;
+	}
+	
+	/**
+	 * Compare done, then the inner comparator.
+	 */
+	private final class CompareDone implements Comparator<Task>
+	{
+		@Override
+		public final int compare(Task theTask, Task theOtherTask)
+		{
+			if(theTask.isDone())
+			{
+				if(theOtherTask.isDone())
+				{
+					if(null != _innerComparator)
+					{
+						return _innerComparator.compare(theTask, theOtherTask);
+					}
+					return 0;
+				}
+				return 1;
+			}
+			return -1;
+		}
 	}
 	
 	private static final int compareDueDate(Task theTask, Task theOtherTask)

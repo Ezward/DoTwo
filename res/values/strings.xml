@@ -14,6 +14,17 @@
     <string name="Today">Today</string>
     <string name="title_today_list">Today</string>
     
+    <!--  empty today fragment -->
+    <string name="title_empty_today"><b>What are you doing today?</b></string>
+    <string name="body_empty_today">
+            <p>\n1. Swipe to see your lists.</p>
+            <p>\n2. Touch the sun to do it today.</p>
+            <p>\n3. Check it when it is done.</p>
+            <p>\n</p>
+    </string>
+    <string name="footer_empty_today"><b><i>Have fun, get stuff done.</i></b></string>
+    <string name="button_empty_today">See your lists -></string>
+    
     <!-- new list dialog -->
     <string name="button_ok_new_list">OK</string>
     <string name="title_new_list_dialog">New List</string>
