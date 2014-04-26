@@ -3,6 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
     android:clickable="true"
+    android:background="@drawable/task_item_background_normal"
+    android:paddingLeft="@dimen/task_item_padding_left"
+    android:paddingRight="@dimen/task_item_padding_right"
+    android:paddingTop="@dimen/task_item_padding_top"
+    android:paddingBottom="@dimen/task_item_padding_bottom"
     >
 
     <TextView

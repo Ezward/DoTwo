@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
+    android:background="@color/today_background_color"
     >
     
     <!-- sort bar -->
@@ -48,6 +49,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/panelSortBarToday"
+	    android:divider="@android:color/transparent"
+	    android:dividerHeight="@dimen/task_list_divider_height"
+	    android:layout_marginLeft="@dimen/task_list_margin_left"
+	    android:layout_marginRight="@dimen/task_list_margin_right"
+	    android:layout_marginTop="@dimen/task_list_margin_top"
+	    android:layout_marginBottom="@dimen/task_list_margin_bottom"
         />
     
 </RelativeLayout>

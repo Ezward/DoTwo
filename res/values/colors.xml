@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  task list -->
+    <color name="task_list_background">#F5F5F5</color>
+    <color name="task_item_background">#FFFFFF</color>
+    <color name="task_item_background_border">#E6E6E6</color>
+    
+    <!-- today list -->
+    <color name="today_background_color">@color/task_list_background</color>
+    
+</resources>
