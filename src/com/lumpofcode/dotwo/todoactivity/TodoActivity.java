@@ -299,8 +299,8 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 		{
 			progressDialog = ProgressDialog.show(
 					TodoActivity.this, 
-					"Progress Dialog Title Text",
-					"Process Description Text", 
+					TodoActivity.this.getString(R.string.load_progress_title),
+					TodoActivity.this.getString(R.string.load_progress_description),
 					true);
 
 			// do initialization of required objects objects here

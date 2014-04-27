@@ -2,13 +2,16 @@
 <resources>
 
     <string name="app_name">DoTwo</string>
-    <string name="tagline">Have fun, get stuff done.</string>
-    <string name="tagline_styled"><b><i>@string/tagline</i></b></string>
-    
+    <string name="tagline">Have fun. Get stuff done.</string>
+    <string name="tagline_styled"><b><i>Have fun. Get stuff done.</i></b></string>
     
     <!-- action bar -->
     <string name="action_new_list">New List</string>
     <string name="action_choose_list">Choose List</string>
+    
+    <!--  todo activity (main activity) -->
+    <string name="load_progress_title">Loading your stuff&#8230;</string>
+    <string name="load_progress_description">@string/tagline_styled</string>
     
     <!-- new task fragment -->
     <string name="button_new_todo">+</string>
@@ -44,7 +47,8 @@
         <p>\n1. Type a name below.</p>
         <p>\n2. Select + button.</p>
         <p>\n3. Add some tasks.</p>
-        </string>
+        <p>\n</p>
+    </string>
     <string name="footer_missing_list">@string/tagline_styled</string>
     
     <!-- empty TaskList frame -->
@@ -54,6 +58,7 @@
         <p>\n2. Select + button.</p>
         <p>\n3. Touch the sun to do it today.</p>
         <p>\n4. Check it when it is done.</p>
+        <p>\n</p>
     </string>
     <string name="footer_empty_list">@string/tagline_styled</string>
     
