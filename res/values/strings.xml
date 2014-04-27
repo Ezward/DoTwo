@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">DoTwo</string>
+    <string name="tagline">Have fun, get stuff done.</string>
+    <string name="tagline_styled"><b><i>@string/tagline</i></b></string>
+    
     
     <!-- action bar -->
     <string name="action_new_list">New List</string>
@@ -22,7 +25,7 @@
             <p>\n3. Check it when it is done.</p>
             <p>\n</p>
     </string>
-    <string name="footer_empty_today"><b><i>Have fun, get stuff done.</i></b></string>
+    <string name="footer_empty_today">@string/tagline_styled</string>
     <string name="button_empty_today">See your lists -></string>
     
     <!-- new list dialog -->
@@ -34,6 +37,25 @@
     <string name="template_list_status">{LIST_SIZE} tasks</string>
     <string name="button_new_takslist">+</string>
     <string name="title_tasklists">Your Lists</string>
+    
+    <!-- missing TaskList frame -->
+    <string name="title_missing_list"><b>Create a new list</b></string>
+    <string name="body_missing_list">
+        <p>\n1. Type a name below.</p>
+        <p>\n2. Select + button.</p>
+        <p>\n3. Add some tasks.</p>
+        </string>
+    <string name="footer_missing_list">@string/tagline_styled</string>
+    
+    <!-- empty TaskList frame -->
+    <string name="title_empty_list"><b>Create a new task</b></string>
+    <string name="body_empty_list">
+        <p>\n1. Type a name below.</p>
+        <p>\n2. Select + button.</p>
+        <p>\n3. Touch the sun to do it today.</p>
+        <p>\n4. Check it when it is done.</p>
+    </string>
+    <string name="footer_empty_list">@string/tagline_styled</string>
     
     <!-- Task Details Dialog  -->
     <string name="hint_task_name_detail">Task Name</string>

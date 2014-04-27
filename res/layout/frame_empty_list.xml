@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/emptyTaskListFrame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:layout_marginLeft="@dimen/task_list_margin_left"
+    android:layout_marginRight="@dimen/task_list_margin_right"
+    android:layout_marginTop="@dimen/task_list_margin_top"
+    android:layout_marginBottom="@dimen/task_list_margin_bottom"
+    >
+    
+    <!--  when task list is empty -->	
+    <TextView
+        android:id="@+id/titleListEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bodyListEmpty"
+        android:text="@string/title_empty_today"
+        android:textAppearance="?android:attr/textAppearanceLarge" 
+        android:layout_centerHorizontal="true"
+        />
+    <TextView
+        android:id="@+id/bodyListEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@string/body_empty_today"
+        android:textAppearance="?android:attr/textAppearanceMedium" 
+        />
+    <TextView
+        android:id="@+id/footerListEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bodyListEmpty"
+        android:text="@string/footer_empty_today"
+        android:textAppearance="?android:attr/textAppearanceMedium" 
+        android:layout_centerHorizontal="true"
+        />
+			
+</RelativeLayout>

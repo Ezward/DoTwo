@@ -23,11 +23,11 @@ import com.lumpofcode.dotwo.model.TodayList;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment.NewListDialogListener;
 import com.lumpofcode.dotwo.today.TodayFragment;
-import com.lumpofcode.dotwo.todolists.OnAddTaskList;
+import com.lumpofcode.dotwo.todolists.TaskListAddedListener;
 import com.lumpofcode.dotwo.todopanel.TodoPanelFragment;
 import com.lumpofcode.view.Pageable;
 
-public class TodoActivity extends FragmentActivity implements NewListDialogListener, OnAddTaskList, Pageable
+public class TodoActivity extends FragmentActivity implements NewListDialogListener, TaskListAddedListener, Pageable
 {
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
@@ -163,7 +163,11 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 			//
 			// we show nothing until the data is loaded
 			//
-			return _dataLoaded ? (TaskLists.taskListCount() + 1) : 0;	// we have the TaskLists list plus each TaskList
+			// Once data is loaded we show the today list,
+			// each task list and one empty task list
+			// so the user can create a new list.
+			//
+			return _dataLoaded ? (TaskLists.taskListCount() + 2) : 0;	// we have the TaskLists list plus each TaskList
 		}
 
 		@Override
@@ -182,8 +186,18 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 				}
 				default:
 				{
+					TodoPanelFragment theFragment;
 					final int theTodoListIndex = position - 1;
-					final TodoPanelFragment theFragment = newTodoFragment(TaskLists.getTaskListByIndex(theTodoListIndex).name());
+					if(theTodoListIndex < TaskLists.taskListCount())
+					{
+						// fragment with list, so user can create and edit tasks
+						theFragment = newTodoFragment(TaskLists.getTaskListByIndex(theTodoListIndex).name());
+					}
+					else
+					{
+						// empty fragment so user can create new list
+						theFragment = newTodoFragment(null);
+					}
 					_todoPanelFragments.add(theFragment);
 					return theFragment;
 				}
@@ -202,7 +216,17 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 				}
 				default:
 				{
-					return TaskLists.getTaskListByIndex(position - 1).name();
+					final int theTodoListIndex = position - 1;
+					if(theTodoListIndex < TaskLists.taskListCount())
+					{
+						// fragment with list, so user can create and edit tasks
+						return TaskLists.getTaskListByIndex(theTodoListIndex).name();
+					}
+					else
+					{
+						// empty fragment so user can create new list
+						return mViewPager.getContext().getString(R.string.title_missing_list);
+					}
 				}
 			}
 		}
@@ -255,9 +279,12 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 	}
 
 	@Override
-	public void onAddTaskList(String theTaskListName)
+	public void onTaskListAdded(String theTaskListName)
 	{
-		onFinishNewListDialog(theTaskListName);
+		//
+		// a task list was added, update the pages
+		//
+		mSectionsPagerAdapter.notifyDataSetChanged();
 	}
 
 	/**

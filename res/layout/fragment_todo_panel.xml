@@ -5,17 +5,116 @@
     android:layout_height="match_parent"
     >
     
-    <!-- task list -->
-    <ListView
-        android:id="@+id/listTodo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/panelNewTodo"
-        tools:listitem="@layout/todo_item" >
-
-    </ListView>
-    
+    <FrameLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:layout_above="@+id/panelNewTodo" 
+        >
+        
+	    <!-- task list -->
+	    <ListView
+	        android:id="@+id/listTodo"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+		    android:divider="@android:color/transparent"
+		    android:dividerHeight="@dimen/task_list_divider_height"
+		    android:layout_marginLeft="@dimen/task_list_margin_left"
+		    android:layout_marginRight="@dimen/task_list_margin_right"
+		    android:layout_marginTop="@dimen/task_list_margin_top"
+		    android:layout_marginBottom="@dimen/task_list_margin_bottom"
+	        />
+	
+	    <!-- when task list is empty or does not exist -->
+	    <ViewFlipper
+	        android:id="@+id/emptyOrMissingTaskListFrame"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+	        >
+		    
+			<RelativeLayout 
+			    android:id="@+id/missingTaskListFrame"
+			    android:layout_width="match_parent"
+			    android:layout_height="match_parent" 
+			    android:layout_marginLeft="@dimen/task_list_margin_left"
+			    android:layout_marginRight="@dimen/task_list_margin_right"
+			    android:layout_marginTop="@dimen/task_list_margin_top"
+			    android:layout_marginBottom="@dimen/task_list_margin_bottom"
+			    >
+			
+			    <TextView
+			        android:id="@+id/titleListMissing"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_above="@+id/bodyListMissing"
+			        android:text="@string/title_missing_list"
+			        android:textAppearance="?android:attr/textAppearanceLarge" 
+			        android:layout_centerHorizontal="true"
+			        />
+			    <TextView
+			        android:id="@+id/bodyListMissing"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_centerHorizontal="true"
+			        android:layout_centerVertical="true"
+			        android:text="@string/body_missing_list"
+			        android:textAppearance="?android:attr/textAppearanceMedium" 
+			        />
+			    <TextView
+			        android:id="@+id/footerListMissing"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@+id/bodyListMissing"
+			        android:text="@string/footer_missing_list"
+			        android:textAppearance="?android:attr/textAppearanceMedium" 
+			        android:layout_centerHorizontal="true"
+			        />
+			
+			</RelativeLayout>
+	        	        
+	        <!--  when task list is empty -->
+			<RelativeLayout 
+			    android:id="@+id/emptyTaskListFrame"
+			    android:layout_width="match_parent"
+			    android:layout_height="match_parent" 
+			    android:layout_marginLeft="@dimen/task_list_margin_left"
+			    android:layout_marginRight="@dimen/task_list_margin_right"
+			    android:layout_marginTop="@dimen/task_list_margin_top"
+			    android:layout_marginBottom="@dimen/task_list_margin_bottom"
+			    >
+			
+			    <TextView
+			        android:id="@+id/titleListEmpty"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_above="@+id/bodyListEmpty"
+			        android:text="@string/title_empty_list"
+			        android:textAppearance="?android:attr/textAppearanceLarge" 
+			        android:layout_centerHorizontal="true"
+			        />
+			    <TextView
+			        android:id="@+id/bodyListEmpty"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_centerHorizontal="true"
+			        android:layout_centerVertical="true"
+			        android:text="@string/body_empty_list"
+			        android:textAppearance="?android:attr/textAppearanceMedium" 
+			        />
+			    <TextView
+			        android:id="@+id/footerListEmpty"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@+id/bodyListEmpty"
+			        android:text="@string/footer_empty_list"
+			        android:textAppearance="?android:attr/textAppearanceMedium" 
+			        android:layout_centerHorizontal="true"
+			        />
+			
+			</RelativeLayout>
+	    </ViewFlipper>
+    </FrameLayout>
+	        
     <!-- new task -->
 	<LinearLayout 
 	    android:id="@+id/panelNewTodo"

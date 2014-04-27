@@ -19,13 +19,13 @@ import com.lumpofcode.dotwo.model.TaskLists;
 import com.lumpofcode.dotwo.model.TodayList;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment.NewListDialogListener;
-import com.lumpofcode.dotwo.todolists.OnAddTaskList;
+import com.lumpofcode.dotwo.todolists.TaskListAddedListener;
 import com.lumpofcode.dotwo.todolists.OnTaskListClickListener;
 import com.lumpofcode.dotwo.todolists.TaskListsFragment;
 import com.lumpofcode.dotwo.todopanel.TodoPanelFragment;
 
 public class SplitTodoActivity extends FragmentActivity implements NewListDialogListener, OnTaskListClickListener,
-		OnAddTaskList
+		TaskListAddedListener
 {
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
@@ -256,7 +256,7 @@ public class SplitTodoActivity extends FragmentActivity implements NewListDialog
 	}
 
 	@Override
-	public void onAddTaskList(String theTaskListName)
+	public void onTaskListAdded(String theTaskListName)
 	{
 		onFinishNewListDialog(theTaskListName);
 	}

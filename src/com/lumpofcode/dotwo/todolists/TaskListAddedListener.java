@@ -1,6 +1,6 @@
 package com.lumpofcode.dotwo.todolists;
 
-public interface OnAddTaskList
+public interface TaskListAddedListener
 {
 	/**
 	 * Called when the user has asked for a new list to be created.
@@ -9,5 +9,5 @@ public interface OnAddTaskList
 	 * 
 	 * @param theTaskListName the name the user wants for the list
 	 */
-	public void onAddTaskList(final String theTaskListName);
+	public void onTaskListAdded(final String theTaskListName);
 }
