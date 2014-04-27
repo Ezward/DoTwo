@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <!--  
+    	use background drawable to make the overall drawable's
+    	size large enough for a button (good hit area)
+    -->
+	<item android:drawable="@drawable/toggle_background"/>
+	
+	<!-- 
+		NOTE: we use a gravity=center bitmap for two reasons
+		      1) we don't need to know dimension of image in order to center it
+		      2) this also prevents the image from being scaled
+		         see here: http://developer.android.com/guide/topics/resources/drawable-resource.html#LayerList
+	 -->
+    <item>
+        <bitmap 
+            android:src="@drawable/ic_check_on"
+			android:gravity="center" 
+			/>
+    </item>
+</layer-list>

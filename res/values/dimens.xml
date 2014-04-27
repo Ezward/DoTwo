@@ -19,4 +19,8 @@
     <dimen name="task_item_padding_top">4dp</dimen>
     <dimen name="task_item_padding_bottom">@dimen/task_item_padding_top</dimen>
     
+    <!--  toggle buttons -->
+    <dimen name="toggle_width">44dp</dimen>
+    <dimen name="toggle_height">44dp</dimen>
+    
 </resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- 
+    	this is a transparent background for the toggle buttons
+    	to center their icons within, so they have a big enough
+    	hit area.
+     -->
+    <size
+        android:width="@dimen/toggle_width"
+        android:height="@dimen/toggle_height"
+        />
+    <solid android:color="@android:color/transparent" />
+    <stroke android:color="@android:color/transparent" android:width="0dp"/>
+</shape>

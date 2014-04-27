@@ -35,18 +35,24 @@
 
     <ToggleButton
         android:id="@+id/toggleToday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/toggle_width"
+        android:layout_height="@dimen/toggle_height"
         android:layout_toLeftOf="@+id/toggleDone"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/toggle_today"
+        android:textOn=""
+        android:textOff=""
         />
     
     <ToggleButton
         android:id="@+id/toggleDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/toggle_width"
+        android:layout_height="@dimen/toggle_height"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/toggle_done"
+        android:textOn=""
+        android:textOff=""
         />
 
 
