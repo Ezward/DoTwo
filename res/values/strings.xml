@@ -71,4 +71,31 @@
     <string name="msg_task_name_already_exists">A task with that name already exists.</string>
     <string name="title_due_date_dialog">Due By</string>
     
+    <!-- AbstractTaskListFragment -->
+    <string-array name="toast_task_done">
+	    <item>Getting stuff done.</item>
+	    <item>It\'s done! Having fun?</item>
+	    <item>Awesome!</item>
+	    <item>Another one bites the dust.</item>
+	    <item>Making it happen.</item>
+	    <item>Advancing one task at a time.</item>
+	    </string-array>
+    <string-array name="toast_task_today">
+	    <item>It\'s happening!</item>
+	    <item>Today is a good day.</item>
+	    <item>Today is the day.</item>
+	    <item>Soon it shall come to pass.</item>
+	    </string-array>
+    <string-array name="toast_task_not_today">
+        <item>If not today, when?</item>
+        <item>To do another day.</item>
+        <item>Fairer weather tomorrow.</item>
+        <item>Making room for the important.</item>
+    </string-array>
+    <string-array name="toast_task_not_done">
+        <item>Second time\'s the charm.</item>
+        <item>What is undone can be redone.</item>
+        <item>Undone.</item>
+    </string-array>
+    
 </resources>

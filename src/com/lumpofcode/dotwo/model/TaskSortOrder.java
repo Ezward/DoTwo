@@ -20,7 +20,8 @@ public enum TaskSortOrder
 	
 	public final Comparator<Task> comparator()
 	{
-		return _doneComparator;
+		return _innerComparator;	// use this if we are not sorting on done
+		//return _doneComparator; use this is if we are taking 'done' into account in sort order
 	}
 	
 	/**

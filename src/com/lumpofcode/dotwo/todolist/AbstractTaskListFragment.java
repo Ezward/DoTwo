@@ -1,8 +1,14 @@
 package com.lumpofcode.dotwo.todolist;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.widget.Toast;
 
+import com.lumpofcode.array.ArrayUtils;
+import com.lumpofcode.dotwo.R;
 import com.lumpofcode.dotwo.model.Task;
 import com.lumpofcode.dotwo.model.TaskList;
 import com.lumpofcode.dotwo.model.TaskLists;
@@ -26,6 +32,9 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 		final TaskList theTaskList = TaskLists.getTaskListByName(theTaskListName);
 		final Task theTask = theTaskList.getTaskByName(theTaskName);
 		
+		// toast to the user
+		Toast.makeText(getActivity(), theCheckedState ? _toastDone() : _toastNotDone(), Toast.LENGTH_SHORT).show();
+
 		theTask.isDone(theCheckedState);
 		if(theTask.isToday())
 		{
@@ -35,7 +44,7 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 		
 		theTask.save();
 	}
-
+	
 	@Override
 	public void onTaskTodayCheckedChanged(
 			TaskListAdapter theAdapter,
@@ -46,6 +55,9 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 		final TaskList theTaskList = TaskLists.getTaskListByName(theTaskListName);
 		final Task theTask = theTaskList.getTaskByName(theTaskName);
 		
+		// toast to the user
+		Toast.makeText(getActivity(), theCheckedState ? _toastToday() : _toastNotToday(), Toast.LENGTH_SHORT).show();
+
 		theTask.isToday(theCheckedState);
 		if(theTask.isToday())
 		{
@@ -103,6 +115,74 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 			TodayList.notifyDataChanged();	// tell the today list to redraw itself.
 			theList.notifyDataSetChanged();
 		}
+	}
+	
+	//
+	// Helpers to get shuffled message 
+	// to make the user feedback more interesting
+	//
+	private int _toastTodayIndex = Integer.MAX_VALUE;
+	private String[] _toastToday = null;
+	private final String _toastToday()
+	{
+		if(null == _toastToday)
+		{
+			_toastToday = getResources().getStringArray(R.array.toast_task_today);
+		}
+		if(_toastTodayIndex >= _toastToday.length)
+		{
+			ArrayUtils.stringShuffle(_toastToday);
+			_toastTodayIndex = 0;
+		}
+		return _toastToday[_toastTodayIndex++];
+	}
+	
+	private int _toastNotTodayIndex = Integer.MAX_VALUE;
+	private String[] _toastNotToday = null;
+	private final String _toastNotToday()
+	{
+		if(null == _toastNotToday)
+		{
+			_toastNotToday = getResources().getStringArray(R.array.toast_task_not_today);
+		}
+		if(_toastNotTodayIndex >= _toastNotToday.length)
+		{
+			ArrayUtils.stringShuffle(_toastNotToday);
+			_toastNotTodayIndex = 0;
+		}
+		return _toastNotToday[_toastNotTodayIndex++];
+	}
+
+	private int _toastDoneIndex = Integer.MAX_VALUE;
+	private String[] _toastDone = null;
+	private final String _toastDone()
+	{
+		if(null == _toastDone)
+		{
+			_toastDone = getResources().getStringArray(R.array.toast_task_done);
+		}
+		if(_toastDoneIndex >= _toastDone.length)
+		{
+			ArrayUtils.stringShuffle(_toastDone);
+			_toastDoneIndex = 0;
+		}
+		return _toastDone[_toastDoneIndex++];
+	}
+	
+	private int _toastNotDoneIndex = Integer.MAX_VALUE;
+	private String[] _toastNotDone = null;
+	private final String _toastNotDone()
+	{
+		if(null == _toastNotDone)
+		{
+			_toastNotDone = getResources().getStringArray(R.array.toast_task_not_done);
+		}
+		if(_toastNotDoneIndex >= _toastNotDone.length)
+		{
+			ArrayUtils.stringShuffle(_toastNotDone);
+			_toastNotDoneIndex = 0;
+		}
+		return _toastNotDone[_toastNotDoneIndex++];
 	}
 
 }
