@@ -14,20 +14,34 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+import android.widget.ViewFlipper;
 
 import com.lumpofcode.dotwo.R;
 import com.lumpofcode.dotwo.model.TaskList;
 import com.lumpofcode.dotwo.model.TaskLists;
+import com.lumpofcode.dotwo.model.TaskSortOrder;
 import com.lumpofcode.dotwo.model.TodayList;
-import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment.NewListDialogListener;
 import com.lumpofcode.dotwo.today.TodayFragment;
 import com.lumpofcode.dotwo.todolists.TaskListAddedListener;
 import com.lumpofcode.dotwo.todopanel.TodoPanelFragment;
 import com.lumpofcode.view.Pageable;
 
-public class TodoActivity extends FragmentActivity implements NewListDialogListener, TaskListAddedListener, Pageable
+/**
+ * @author Ed
+ *
+ */
+/**
+ * @author Ed
+ *
+ */
+public class TodoActivity extends FragmentActivity implements NewListDialogListener, TaskListAddedListener, Pageable, OnClickListener
 {
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
@@ -43,6 +57,12 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 
 	private List<TodoPanelFragment> _todoPanelFragments	= null;
 	
+	private ViewFlipper _sortFlipper = null;
+	private Button _toggleSortByDate = null;
+	private Button _toggleSortByPriority = null;
+	private Button _toggleSortByImportance = null;
+	private Button _toggleSortByName = null;
+	
 	private boolean _dataLoaded = false;
 
 	@Override
@@ -52,6 +72,24 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo);
+		
+		//
+		// setup the view flipper to animate the flip
+		//
+		_sortFlipper = (ViewFlipper)findViewById(R.id.sortFlipper);
+		_sortFlipper.setInAnimation(
+				AnimationUtils.loadAnimation(_sortFlipper.getContext(), R.anim.slide_in_from_bottom_fast));
+		_sortFlipper.setOutAnimation(
+				AnimationUtils.loadAnimation(_sortFlipper.getContext(), R.anim.slide_out_from_bottom_fast));
+
+		_toggleSortByDate = (Button)findViewById(R.id.toggleSortByDueDate);
+		_toggleSortByDate.setOnClickListener(this);
+		_toggleSortByPriority = (Button)findViewById(R.id.toggleSortByPriority);
+		_toggleSortByPriority.setOnClickListener(this);
+		_toggleSortByImportance = (Button)findViewById(R.id.toggleSortByImportance);
+		_toggleSortByImportance.setOnClickListener(this);
+		_toggleSortByName = (Button)findViewById(R.id.toggleSortByName);
+		_toggleSortByName.setOnClickListener(this);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -124,13 +162,22 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 	{
 		switch (item.getItemId())
 		{
+			case R.id.action_goto_today:
+			{
+				// bring up model dialog for adding list
+				Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
+				showPageByIndex(0);	// first page is the today page
+				return true;
+			}
 			case R.id.action_new_list:
 			{
 				// bring up model dialog for adding list
 				Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
-				final FragmentManager fm = getSupportFragmentManager();
-				final NewListDialogFragment theDialog = NewListDialogFragment.newInstance(true);
-				theDialog.show(fm, null);
+				showPageByIndex(getPageCount() - 1);	// last page is for new list.
+//				Old code opened dialog to get list name
+//				final FragmentManager fm = getSupportFragmentManager();
+//				final NewListDialogFragment theDialog = NewListDialogFragment.newInstance(true);
+//				theDialog.show(fm, null);
 				return true;
 			}
 			case R.id.action_choose_list:
@@ -146,6 +193,58 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 		}
 	}
 
+
+	//
+	// handle sort buttons
+	//
+	@Override
+	public void onClick(View theButton)
+	{
+		//
+		// the current button was pressed.
+		// find it's index in the flipper, then calculate the next
+		// button's index and get it's id.
+		//
+		int theButtonIndex = _sortFlipper.indexOfChild(theButton);
+		int theNextIndex = (theButtonIndex + 1) % _sortFlipper.getChildCount();
+		int theNextId = _sortFlipper.getChildAt(theNextIndex).getId();
+		switch(theNextId)
+		{
+			case R.id.toggleSortByDueDate:
+			{
+				//
+				// uncheck other buttons; stop listening while we do this
+				// so this callback does not get called recursively
+				//
+				_sortFlipper.setDisplayedChild(theNextIndex);
+				TodayList.sortOrder(TaskSortOrder.BY_DUE_DATE);
+				TaskLists.sort(TaskSortOrder.BY_DUE_DATE);
+				return;
+			}
+			case R.id.toggleSortByPriority:		// fall through
+			{
+				_sortFlipper.setDisplayedChild(theNextIndex);
+				TodayList.sortOrder(TaskSortOrder.BY_PRIORITY);
+				TaskLists.sort(TaskSortOrder.BY_PRIORITY);
+				return;
+			}
+			case R.id.toggleSortByImportance:	// fall through
+			{
+				_sortFlipper.setDisplayedChild(theNextIndex);
+				TodayList.sortOrder(TaskSortOrder.BY_IMPORTANCE);
+				TaskLists.sort(TaskSortOrder.BY_IMPORTANCE);
+				return;
+			}
+			case R.id.toggleSortByName:	// fall through
+			{
+				_sortFlipper.setDisplayedChild(theNextIndex);
+				TodayList.sortOrder(TaskSortOrder.BY_NAME);
+				TaskLists.sort(TaskSortOrder.BY_NAME);
+				return;
+			}
+		}
+	}
+			
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the sections/tabs/pages.
 	 */
@@ -360,4 +459,6 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 			mViewPager.setCurrentItem(position);
 		}
 	}
+
+
 }

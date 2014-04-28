@@ -140,4 +140,13 @@ public final class TaskLists
 		}
 	}
 	
+	public static final void sort(final TaskSortOrder theOrder)
+	{
+		for(int i = 0; i < taskListCount(); i += 1)
+		{
+			final TaskList theList = getTaskListByIndex(i);
+			theList.sortOrder(theOrder);
+		}
+	}
+	
 }

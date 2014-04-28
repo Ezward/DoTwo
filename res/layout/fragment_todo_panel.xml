@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/task_list_background"
     >
     
     <FrameLayout
@@ -36,6 +37,7 @@
 			    android:id="@+id/missingTaskListFrame"
 			    android:layout_width="match_parent"
 			    android:layout_height="match_parent" 
+	    		android:background="@drawable/task_item_background_normal"
 			    android:layout_marginLeft="@dimen/task_list_margin_left"
 			    android:layout_marginRight="@dimen/task_list_margin_right"
 			    android:layout_marginTop="@dimen/task_list_margin_top"
@@ -77,6 +79,7 @@
 			    android:id="@+id/emptyTaskListFrame"
 			    android:layout_width="match_parent"
 			    android:layout_height="match_parent" 
+	    		android:background="@drawable/task_item_background_normal"
 			    android:layout_marginLeft="@dimen/task_list_margin_left"
 			    android:layout_marginRight="@dimen/task_list_margin_right"
 			    android:layout_marginTop="@dimen/task_list_margin_top"

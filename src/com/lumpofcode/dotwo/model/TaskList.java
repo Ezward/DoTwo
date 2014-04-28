@@ -1,6 +1,7 @@
 package com.lumpofcode.dotwo.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,8 @@ public final class TaskList extends Model
 	//
 	private ArrayList<Task> __tasks = null;
 	private Map<String, Task> __taskMap = null;
+
+	private static TaskSortOrder _sortOrder = TaskSortOrder.BY_PRIORITY;
 
 	//
 	// zero arg constructor required by ActiveAndroid
@@ -305,8 +308,28 @@ public final class TaskList extends Model
 	{
 		if(null != __adapter)
 		{
+			_sort();
 			__adapter.notifyDataSetChanged();
 		}
 	}
 	
+	public final TaskSortOrder sortOrder()
+	{
+		return _sortOrder;
+	}
+	public final void sortOrder(TaskSortOrder theSortOrder)
+	{
+		if(_sortOrder != theSortOrder)
+		{
+			// set order and do the sort
+			_sortOrder = theSortOrder;
+			notifyDataSetChanged();	// this will sort it
+		}
+	}
+	
+	private final void _sort()
+	{
+		Collections.sort(_tasks(), sortOrder().comparator());
+	}
+
 }

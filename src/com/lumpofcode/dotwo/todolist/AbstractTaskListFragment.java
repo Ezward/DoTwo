@@ -33,7 +33,7 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 		final Task theTask = theTaskList.getTaskByName(theTaskName);
 		
 		// toast to the user
-		Toast.makeText(getActivity(), theCheckedState ? _toastDone() : _toastNotDone(), Toast.LENGTH_SHORT).show();
+		_toast(theCheckedState ? _toastDone() : _toastNotDone());
 
 		theTask.isDone(theCheckedState);
 		if(theTask.isToday())
@@ -56,7 +56,7 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 		final Task theTask = theTaskList.getTaskByName(theTaskName);
 		
 		// toast to the user
-		Toast.makeText(getActivity(), theCheckedState ? _toastToday() : _toastNotToday(), Toast.LENGTH_SHORT).show();
+		_toast(theCheckedState ? _toastToday() : _toastNotToday());
 
 		theTask.isToday(theCheckedState);
 		if(theTask.isToday())
@@ -185,4 +185,22 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 		return _toastNotDone[_toastNotDoneIndex++];
 	}
 
+	/**
+	 * Show a toast.  Interupt current toast if necessary.
+	 * 
+	 * @param theMessage string to show
+	 */
+	private final void _toast(final String theMessage)
+	{
+		if(null == _lastToast_)
+		{
+			_lastToast_ = Toast.makeText(getActivity(), theMessage, Toast.LENGTH_SHORT);
+		}
+		if(null != theMessage)
+		{
+			_lastToast_.setText(theMessage);
+			_lastToast_.show();
+		}
+	}
+	private Toast _lastToast_ = null;
 }

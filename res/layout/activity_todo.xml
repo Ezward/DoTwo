@@ -25,49 +25,62 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="top"
-	        android:background="#33b5e5"
+	        android:background="@color/pager_background"
 	        android:paddingBottom="4dp"
 	        android:paddingTop="4dp"
-	        android:textColor="#fff" />
+	        android:textColor="@color/pager_text" />
 	    
 	</android.support.v4.view.ViewPager>
 	
 	<!-- sort bar -->
-	<LinearLayout 
-	    android:id="@+id/panelSortBarToday"
+	<ViewFlipper 
+	    android:id="@+id/sortFlipper"
 	    android:orientation="horizontal" 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
 	    >
 	
-	    <ToggleButton
-	        android:id="@+id/toggleSortByPriorityToday"
+	    <Button
+	        android:id="@+id/toggleSortByPriority"
 	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:textOn=" ! " 
-	        android:textOff=" ! " 
+	        android:layout_height="@dimen/sort_height"
+	        android:text="@string/sorted_by_priority" 
+	        android:layout_margin="0dp"
+	        android:padding="0dp"
+	        android:background="@drawable/sort_button_background"
+	        />
+	    
+	    <Button
+	        android:id="@+id/toggleSortByImportance"
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/sort_height"
+	        android:text="@string/sorted_by_importance" 
+	        android:layout_margin="0dp"
+	        android:padding="0dp"
+	        android:background="@drawable/sort_button_background"
 	        />
 	
-	    <ToggleButton
-	        android:id="@+id/toggleSortByImportanceToday"
+		<Button
+	        android:id="@+id/toggleSortByDueDate"
 	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:textOn=" ☆ " 
-	        android:textOff=" ☆ " 
+	        android:layout_height="@dimen/sort_height"
+	        android:text="@string/sorted_by_due_date" 
+	        android:layout_margin="0dp"
+	        android:padding="0dp"
+	        android:background="@drawable/sort_button_background"
 	        />
 	
-	    <ToggleButton
-	        android:id="@+id/toggleSortByDueDateToday"
+		<Button
+	        android:id="@+id/toggleSortByName"
 	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:textOn=" ☀ " 
-	        android:textOff=" ☀ " 
+	        android:layout_height="@dimen/sort_height"
+	        android:text="@string/sorted_by_name" 
+	        android:layout_margin="0dp"
+	        android:padding="0dp"
+	        android:background="@drawable/sort_button_background"
 	        />
 	
-	</LinearLayout>
+	</ViewFlipper>
 	
 </RelativeLayout>

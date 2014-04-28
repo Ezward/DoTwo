@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">DoTwo</string>
+    <string name="app_name">Do Today</string>
     <string name="tagline">Have fun. Get stuff done.</string>
     <string name="tagline_styled"><b><i>Have fun. Get stuff done.</i></b></string>
     
     <!-- action bar -->
-    <string name="action_new_list">New List</string>
+    <string name="action_new_list">Add a new list</string>
     <string name="action_choose_list">Choose List</string>
+    <string name="action_goto_today">Today</string>
     
     <!--  todo activity (main activity) -->
     <string name="load_progress_title">Loading your stuff&#8230;</string>
     <string name="load_progress_description">@string/tagline_styled</string>
     
+    <!-- sorting bar -->
+    <string name="sorted_by_due_date">Sorted by Due Date</string>
+    <string name="sorted_by_priority">Sorted by Importance and Date</string>
+    <string name="sorted_by_importance">Sorted by Importance</string>
+    <string name="sorted_by_name">Sorted by name</string>
+        
     <!-- new task fragment -->
     <string name="button_new_todo">+</string>
     
@@ -42,7 +49,7 @@
     <string name="title_tasklists">Your Lists</string>
     
     <!-- missing TaskList frame -->
-    <string name="title_missing_list"><b>Create a new list</b></string>
+    <string name="title_missing_list"><b>Add a new list</b></string>
     <string name="body_missing_list">
         <p>\n1. Type a name below.</p>
         <p>\n2. Select + button.</p>
@@ -52,7 +59,7 @@
     <string name="footer_missing_list">@string/tagline_styled</string>
     
     <!-- empty TaskList frame -->
-    <string name="title_empty_list"><b>Create a new task</b></string>
+    <string name="title_empty_list"><b>Add a new task</b></string>
     <string name="body_empty_list">
         <p>\n1. Type a name below.</p>
         <p>\n2. Select + button.</p>
@@ -79,13 +86,15 @@
 	    <item>Another one bites the dust.</item>
 	    <item>Making it happen.</item>
 	    <item>Advancing one task at a time.</item>
-	    </string-array>
+	    <item>Making progress.</item>
+	    	    </string-array>
     <string-array name="toast_task_today">
 	    <item>It\'s happening!</item>
 	    <item>Today is a good day.</item>
 	    <item>Today is the day.</item>
-	    <item>Soon it shall come to pass.</item>
-	    </string-array>
+	    <item>It shall soon come to pass.</item>
+	    <item>Better sooner than later.</item>
+	</string-array>
     <string-array name="toast_task_not_today">
         <item>If not today, when?</item>
         <item>To do another day.</item>

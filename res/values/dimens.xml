@@ -7,7 +7,7 @@
     <!--  task list -->
     <dimen name="task_list_margin_left">6dp</dimen>
     <dimen name="task_list_margin_right">@dimen/task_list_margin_left</dimen>
-    <dimen name="task_list_margin_top">0dp</dimen>
+    <dimen name="task_list_margin_top">6dp</dimen>
     <dimen name="task_list_margin_bottom">@dimen/task_list_margin_top</dimen>
     <dimen name="task_list_divider_height">@dimen/task_list_margin_left</dimen>
     
@@ -23,4 +23,6 @@
     <dimen name="toggle_width">44dp</dimen>
     <dimen name="toggle_height">44dp</dimen>
     
+    <!--  sort buttons -->
+    <dimen name="sort_height">32dp</dimen>
 </resources>

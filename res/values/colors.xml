@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--  task list -->
-    <color name="task_list_background">#F5F5F5</color>
+    <color name="task_list_background">#F3F3F3</color>
     <color name="task_item_background">#FFFFFF</color>
-    <color name="task_item_background_border">#E6E6E6</color>
+    <color name="task_item_background_border">#E3E3E3</color>
     
     <!-- today list -->
     <color name="today_background_color">@color/task_list_background</color>
+    
+    <!--  view pager title strip  -->
+    <color name="pager_background">#33b5e5</color>
+    <color name="pager_text">#fff</color>
+    
+    <!--  sort buttons  -->
+    <color name="sort_background">@color/pager_background</color>
+    <color name="sort_selected">#23a5d5</color>
+    <color name="sort_pressed">#20a0d0</color>
+    <color name="sort_stroke">@color/pager_background</color>
     
 </resources>

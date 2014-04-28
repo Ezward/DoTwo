@@ -53,8 +53,7 @@ public final class TodayList
 		{
 			// set order and do the sort
 			_sortOrder = theSortOrder;
-			sort();
-			notifyDataChanged();
+			notifyDataChanged();	// this will sort it
 		}
 	}
 	
