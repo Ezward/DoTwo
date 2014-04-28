@@ -180,12 +180,6 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 //				theDialog.show(fm, null);
 				return true;
 			}
-			case R.id.action_choose_list:
-			{
-				// bring up model dialog for adding list
-				Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
-				return true;
-			}
 			default:
 			{
 				return super.onOptionsItemSelected(item);

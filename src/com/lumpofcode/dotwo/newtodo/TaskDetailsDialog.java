@@ -77,7 +77,6 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 		
 		// tack on response code for calling fragment
 		theDialog.setTargetFragment(theCaller, TASK_DETAILS_DIALOG);
-//		theDialog.setStyle(STYLE_NO_TITLE, theDialog.getTheme());
 
 		return theDialog;
 	}
@@ -93,12 +92,14 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 	public static final TaskDetailsDialog newTaskDetailsDialog(final Task theTask)
 	{
 		TaskDetailsDialog theDialog = new TaskDetailsDialog();
+		theDialog.setStyle(STYLE_NO_TITLE, theDialog.getTheme());
 		
 		// pass arguments to dialog instance
 		Bundle theArguments = new Bundle();
 		theArguments.putString(ARG_TASK_LIST_NAME, theTask.list().name());
 		theArguments.putString(ARG_TASK_NAME, theTask.name());
 		theDialog.setArguments(theArguments);
+		
 
 		return theDialog;
 	}
