@@ -134,7 +134,7 @@
 	        android:layout_alignParentBottom="true"
 	        android:text="@android:string/ok"
 	        />
-	    
+
 	</RelativeLayout>
 
 </FrameLayout>

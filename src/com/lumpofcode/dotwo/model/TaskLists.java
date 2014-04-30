@@ -20,7 +20,6 @@ import com.lumpofcode.dotwo.todolists.TaskListsAdapter;
 public final class TaskLists
 {
 	private static final ArrayList<TaskList> _taskListArray = new ArrayList<TaskList>();
-	private static final Map<String, TaskList> _taskListMappedByName = new HashMap<String, TaskList>();
 	
 	private TaskLists(){}	// private constructor enforces singleton.
 	
@@ -52,7 +51,6 @@ public final class TaskLists
 		//
 		for(TaskList theList : theLists)
 		{
-			_taskListMappedByName.put(theList.name(), theList);
 			theList.load();
 		}
 	}
@@ -85,35 +83,36 @@ public final class TaskLists
 	
 	public static final TaskList getTaskListByName(final String theName)
 	{
-		return _taskListMappedByName.get(theName);
+		final int i = _getTaskListIndexByName(theName);
+		if(i >= 0)
+		{
+			return _taskListArray.get(i);
+		}
+		return null;
 	}
-		
-	public static final void putTaskList(final TaskList theTaskList)
+	private static final int _getTaskListIndexByName(final String theName)
 	{
-		final String theName = theTaskList.name();
-		
-		if(null != _taskListMappedByName.get(theName))
+		final int n = _taskListArray.size();
+		for(int i = 0; i < n; i += 1)
 		{
-			// replace it
-			final int n = _taskListArray.size();
-			for(int i = 0; i < n; i += 1)
-			{
-				final TaskList theExistingTaskList = _taskListArray.get(i);
-				
-				// TODO : should to a case insensitive, igore white space compare
-				if(theName.equals(theExistingTaskList.name()))
-				{
-					_taskListArray.set(i, theTaskList);
-					break;
-				}
-			}
+			final TaskList theExistingTaskList = _taskListArray.get(i);
 			
+			// TODO : should to a case insensitive, igore white space compare
+			if(theName.equals(theExistingTaskList.name()))
+			{
+				return i;
+			}
 		}
-		else	// just add it to the array
+		return -1;
+	}
+			
+	private static final void putTaskList(final TaskList theTaskList)
+	{
+		if(null != getTaskListByName(theTaskList.name()))
 		{
-			_taskListArray.add(theTaskList);
+			throw new IllegalStateException("TaskLists.putTaskList() attempt to add a list with a duplicate name = " + theTaskList.name());
 		}
-		_taskListMappedByName.put(theName, theTaskList);
+		_taskListArray.add(theTaskList);
 	}
 	
 	/**

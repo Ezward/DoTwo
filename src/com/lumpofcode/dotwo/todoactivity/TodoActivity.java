@@ -28,6 +28,7 @@ import com.lumpofcode.dotwo.model.TaskLists;
 import com.lumpofcode.dotwo.model.TaskSortOrder;
 import com.lumpofcode.dotwo.model.TodayList;
 import com.lumpofcode.dotwo.newlistdialog.NewListDialogFragment.NewListDialogListener;
+import com.lumpofcode.dotwo.newtodo.TaskDetailsDialog.OnTaskModifiedListener;
 import com.lumpofcode.dotwo.today.TodayFragment;
 import com.lumpofcode.dotwo.todolists.TaskListAddedListener;
 import com.lumpofcode.dotwo.todopanel.TodoPanelFragment;
@@ -41,7 +42,7 @@ import com.lumpofcode.view.Pageable;
  * @author Ed
  *
  */
-public class TodoActivity extends FragmentActivity implements NewListDialogListener, TaskListAddedListener, Pageable, OnClickListener
+public class TodoActivity extends FragmentActivity implements NewListDialogListener, TaskListAddedListener, Pageable, OnClickListener, OnTaskModifiedListener
 {
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
@@ -121,6 +122,14 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 				// null out the task list name
 				// and tell the adapter
 				// _selectedTaskListName = null;
+				//
+				// if it is not the first page (TodayList) or last page (Add a new list)
+				// the tell the page to show it's list
+				//
+				if((position > 0) && (position < (getPageCount() - 1)))
+				{
+					_todoPanelFragments.get(position - 1).setTaskListByName(TaskLists.getTaskListByIndex(position - 1).name());
+				}
 			}
 
 		});
@@ -206,10 +215,6 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 		{
 			case R.id.toggleSortByDueDate:
 			{
-				//
-				// uncheck other buttons; stop listening while we do this
-				// so this callback does not get called recursively
-				//
 				_sortFlipper.setDisplayedChild(theNextIndex);
 				TodayList.sortOrder(TaskSortOrder.BY_DUE_DATE);
 				TaskLists.sort(TaskSortOrder.BY_DUE_DATE);
@@ -452,6 +457,17 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 		{
 			mViewPager.setCurrentItem(position);
 		}
+	}
+
+
+
+	@Override
+	public void onTaskModified(String theTaskListName, String theTaskName)
+	{
+		//
+		// we don't need to do anything, the dialog is
+		// doing the saving and notifying.
+		//
 	}
 
 

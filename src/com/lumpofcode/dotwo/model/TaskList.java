@@ -46,9 +46,8 @@ public final class TaskList extends Model
 	// private collection, populated with call to ActiveAndroid
 	//
 	private ArrayList<Task> __tasks = null;
-	private Map<String, Task> __taskMap = null;
 
-	private static TaskSortOrder _sortOrder = TaskSortOrder.BY_PRIORITY;
+	private TaskSortOrder _sortOrder = TaskSortOrder.BY_PRIORITY;
 
 	//
 	// zero arg constructor required by ActiveAndroid
@@ -78,11 +77,6 @@ public final class TaskList extends Model
 		//
 		_tasks().clear();
 		_tasks().addAll(theTasks);
-		_taskMap().clear();
-		for(Task theTask : theTasks)
-		{
-			_taskMap().put(theTask.name(), theTask);
-		}
 	}
 	
 	/**
@@ -140,19 +134,6 @@ public final class TaskList extends Model
 		}
 		return __tasks;
 	}
-	private Map<String, Task> _taskMap()
-	{
-		// first time, initialize the map
-		if(null == __taskMap)
-		{
-			__taskMap = new HashMap<String, Task>();
-			for(Task theTask : _tasks())
-			{
-				__taskMap.put(theTask.name(), theTask);
-			}
-		}
-		return __taskMap;
-	}
 	public final int taskCount()
 	{
 		return _tasks().size();
@@ -189,7 +170,7 @@ public final class TaskList extends Model
 	 */
 	public Task getTaskByName(final String theTaskName)
 	{
-		return _taskMap().get(theTaskName);
+		return getTaskByIndex(getTaskIndexByName(theTaskName));
 	}
 	public Task getTaskByIndex(final int theIndex)
 	{
@@ -199,15 +180,18 @@ public final class TaskList extends Model
 		}
 		return null;
 	}
-	private int getTaskIndex(final String theTaskName)
+	private int getTaskIndexByName(final String theTaskName)
 	{
 		_validateTaskName(theTaskName);
 		
 		// check the map to see if it exists before searching for it
-		final Task theTask = getTaskByName(theTaskName);
-		if(null != theTask)
+		for(int i = 0; i < taskCount(); i += 1)
 		{
-			return _tasks().indexOf(theTask);
+			final Task theTask = _tasks().get(i);
+			if(theTask.name().equals(theTaskName))
+			{
+				return i;
+			}
 		}
 		return -1;
 	}
@@ -220,7 +204,7 @@ public final class TaskList extends Model
 			final String theTaskName = theTask.name();
 			_validateTaskName(theTaskName);
 			
-			final int i = getTaskIndex(theTaskName);
+			final int i = getTaskIndexByName(theTaskName);
 			if(i >= 0)
 			{
 				// overwrite existing task
@@ -231,7 +215,6 @@ public final class TaskList extends Model
 				// add new task
 				_tasks().add(theTask);
 			}
-			_taskMap().put(theTaskName, theTask);
 		}
 		
 	}
@@ -252,7 +235,7 @@ public final class TaskList extends Model
 			if(SHARED_BY.equals(theTaskName)) throw new IllegalArgumentException("getTask: use of reserved field name, " + SHARED_BY + ".");
 
 			// remove the field if it is null or empty
-			removeTaskByIndex(getTaskIndex(theTaskName));
+			removeTaskByIndex(getTaskIndexByName(theTaskName));
 		}
 	}
 	private void removeTaskByIndex(final int theIndex)
@@ -261,7 +244,6 @@ public final class TaskList extends Model
 		{
 			// remove from map, then list
 			final Task theTask = getTaskByIndex(theIndex);
-			_taskMap().remove(theTask.name());
 			_tasks().remove(theIndex);
 			
 			// persist
@@ -306,9 +288,9 @@ public final class TaskList extends Model
 	
 	public final void notifyDataSetChanged()
 	{
+		_sort();
 		if(null != __adapter)
 		{
-			_sort();
 			__adapter.notifyDataSetChanged();
 		}
 	}

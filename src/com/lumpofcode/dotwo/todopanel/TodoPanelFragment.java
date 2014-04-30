@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.lumpofcode.dotwo.R;
@@ -72,7 +73,6 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 		_viewFlipper = (ViewFlipper)theView.findViewById(R.id.emptyOrMissingTaskListFrame);
 		
 		
-		
 		// get the name of the initial list of tasks from the arguments
 		// that will be the first list we show.
 		_listView = (ListView)theView.findViewById(R.id.listTodo);
@@ -82,7 +82,7 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 		// set task list given the argument.
 		// this may be null, which will show the empty list pane
 		//
-		setTaskListByName(getArguments().getString(TaskList.TASK_LIST_NAME));
+		setTaskListByName((null != _taskList) ? _taskList.name() : getArguments().getString(TaskList.TASK_LIST_NAME));
 		
 		_newButton = (Button)theView.findViewById(R.id.buttonNewTodo);
 		_newButton.setOnClickListener(new NewTodoClickListener());
@@ -133,7 +133,7 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 					_viewFlipper.setDisplayedChild(MISSING_LIST_FRAME);
 				}
 			}
-			else
+			else if((null == _taskList) || !_taskList.name().equals(theTaskListName))
 			{
 				// we are changing lists
 				if(null != _taskList)
@@ -185,29 +185,36 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 				//
 				if(null == _taskList)
 				{
-					//
-					// no task list, so we are creating a new one
-					//
-					// for now, just create a new todo directly
-					TaskList theTaskList = TaskLists.newTaskList(theName);
-					theTaskList.save();
-					
-					// make this panel use the new list
-					setTaskListByName(theName);
-					
-					final FragmentActivity theActivity = getActivity();
-					if(theActivity instanceof TaskListAddedListener)
+					if(null == TaskLists.getTaskListByName(theName))
 					{
-						final TaskListAddedListener theCallback = (TaskListAddedListener)theActivity;
-						theCallback.onTaskListAdded(theName);
+						//
+						// no task list, so we are creating a new one
+						//
+						// for now, just create a new todo directly
+						TaskList theTaskList = TaskLists.newTaskList(theName);
+						theTaskList.save();
+						
+						// make this panel use the new list
+						setTaskListByName(theName);
+						
+						final FragmentActivity theActivity = getActivity();
+						if(theActivity instanceof TaskListAddedListener)
+						{
+							final TaskListAddedListener theCallback = (TaskListAddedListener)theActivity;
+							theCallback.onTaskListAdded(theName);
+						}
+						
+						// show the correct view in the 'empty' frame
+						_viewFlipper.setInAnimation(
+								AnimationUtils.loadAnimation(_viewFlipper.getContext(), R.anim.slide_in_from_bottom));
+						_viewFlipper.setOutAnimation(
+								AnimationUtils.loadAnimation(_viewFlipper.getContext(), R.anim.slide_out_from_bottom));
+						_viewFlipper.setDisplayedChild(EMPTY_LIST_FRAME);
 					}
-					
-					// show the correct view in the 'empty' frame
-					_viewFlipper.setInAnimation(
-							AnimationUtils.loadAnimation(_viewFlipper.getContext(), R.anim.slide_in_from_bottom));
-					_viewFlipper.setOutAnimation(
-							AnimationUtils.loadAnimation(_viewFlipper.getContext(), R.anim.slide_out_from_bottom));
-					_viewFlipper.setDisplayedChild(EMPTY_LIST_FRAME);
+					else
+					{
+						Toast.makeText(getActivity(), R.string.msg_list_already_exists, Toast.LENGTH_SHORT).show();
+					}
 				}
 				else
 				{
@@ -224,6 +231,7 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 					theTask.save();
 				}
 				
+				// drop through and close the text editor
 				_editNewTodo.getEditableText().clear();
 				_editNewTodo.clearFocus();
 				
@@ -255,11 +263,10 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 		//
 		if(requestCode == TaskDetailsDialog.TASK_DETAILS_DIALOG)
 		{
-			// notify the adapter so it redraws the item
-			if(null != _taskList)
-			{
-				_taskList.notifyDataSetChanged();
-			}
+			//
+			// we don't need to do anything, the dialog is
+			// doing the saving and notifying.
+			//
 		}
 	}
 

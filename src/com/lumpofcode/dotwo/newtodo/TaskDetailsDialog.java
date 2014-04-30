@@ -41,7 +41,6 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 	public static final String ARG_TASK_NAME = "ARG_TASK_NAME";
 	
 	
-	private TaskList _taskList;
 	private Task _task;
 	
 	private EditText _editName;
@@ -195,16 +194,19 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 			//
 			// it's ok if it does not change, or it is not a duplicate
 			//
-			if(theName.equals(_task.name()) || (null == _taskList.getTaskByName(theName)))
+			if(theName.equals(_task.name()) || (null == _task.list().getTaskByName(theName)))
 			{
 				// TODO: Test fields; don't tell caller if they did not change.
 				//
 				// update the task, then tell the caller we did it.
 				// NOTE: we don't save here, we leave that up to the outer controller
 				//
+				_task.name(theName);
 				_task.description(_editDescription.getText().toString());
 				_task.importance1to5((int)_ratingImportance1to5.getRating());
 				_task.dueDateUTC((Long)_textDueDate.getTag());
+				_task.save();	// persist the change
+				_task.list().notifyDataSetChanged();	// tell whomever is listening.
 				
 				// 
 				// tell the caller we modified the task.

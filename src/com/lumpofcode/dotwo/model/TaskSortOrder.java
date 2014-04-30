@@ -50,9 +50,9 @@ public enum TaskSortOrder
 	
 	private static final int compareDueDate(Task theTask, Task theOtherTask)
 	{
-		// sort in descending order (largest {most recent} date first}
-		if(theTask.dueDateUTC() < theOtherTask.dueDateUTC()) return 1;
-		if(theTask.dueDateUTC() > theOtherTask.dueDateUTC()) return -1;
+		// sort in descending order ( {most recent} date first}
+		if(theTask.dueDateUTC() > theOtherTask.dueDateUTC()) return 1;
+		if(theTask.dueDateUTC() < theOtherTask.dueDateUTC()) return -1;
 		return 0;
 	}
 	
@@ -86,9 +86,9 @@ public enum TaskSortOrder
 		@Override
 		public final int compare(Task theTask, Task theOtherTask)
 		{
-			// sort in descending order (hightest importance to lowest importance)
+			// sort in descending order (highest importance to lowest importance)
 			if(theTask.importance1to5() < theOtherTask.importance1to5()) return 1;
-			if(theTask.importance1to5() > theOtherTask.importance1to5()) return 1;
+			if(theTask.importance1to5() > theOtherTask.importance1to5()) return -11;
 			return 0;
 		}
 	};
@@ -99,7 +99,7 @@ public enum TaskSortOrder
 		public final int compare(Task theTask, Task theOtherTask)
 		{
 			// sort names in natural, ascending order
-			return theTask.name().compareTo(theOtherTask.name());
+			return theTask.name().toLowerCase().compareTo(theOtherTask.name().toLowerCase());
 		}
 	};
 

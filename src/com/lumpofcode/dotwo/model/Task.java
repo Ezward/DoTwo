@@ -65,6 +65,11 @@ public final class Task extends Model implements Comparable<Task>
 	{
 		return _name;
 	}
+	public void name(final String theName)
+	{
+		if((null == theName) || theName.isEmpty()) throw new IllegalArgumentException("Task.name cannot be empty or null.");
+		_name = theName;
+	}
 
 	public boolean isDone()
 	{

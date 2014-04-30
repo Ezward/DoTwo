@@ -16,9 +16,9 @@
     
     <!-- sorting bar -->
     <string name="sorted_by_due_date">Sorted by Due Date</string>
-    <string name="sorted_by_priority">Sorted by Importance and Date</string>
+    <string name="sorted_by_priority">Sorted by Points</string>
     <string name="sorted_by_importance">Sorted by Importance</string>
-    <string name="sorted_by_name">Sorted by name</string>
+    <string name="sorted_by_name">Sorted by Name</string>
         
     <!-- new task fragment -->
     <string name="button_new_todo"><big><b>+</b></big></string>
@@ -107,4 +107,13 @@
         <item>Undone.</item>
     </string-array>
     
+    <!-- task list item -->
+    <string-array name="importanceStars">
+        <item>&#x2605;</item>
+        <item>&#x2605;&#x2605;</item>
+        <item>&#x2605;&#x2605;&#x2605;</item>
+        <item>&#x2605;&#x2605;&#x2605;&#x2605;</item>
+        <item>&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;</item>
+    </string-array>
+    <string name="priority_template">$PRIORITY points</string>
 </resources>

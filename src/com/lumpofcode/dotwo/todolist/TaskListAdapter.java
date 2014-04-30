@@ -16,6 +16,9 @@ import android.widget.ToggleButton;
 
 import com.lumpofcode.dotwo.R;
 import com.lumpofcode.dotwo.model.Task;
+import com.lumpofcode.dotwo.model.TaskList;
+import com.lumpofcode.dotwo.model.TaskSortOrder;
+import com.lumpofcode.dotwo.model.TaskUtils;
 
 public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListener, OnCheckedChangeListener
 {
@@ -24,6 +27,8 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 	
 	private final int itemLayoutId;
 	private TaskListListener _listener;
+	
+	private TextView _textDetail = null;
 	
 	public interface TaskListListener
 	{
@@ -110,6 +115,10 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		final TextView theNameView = (TextView)theItemView.findViewById(R.id.textTask);
 		theNameView.setText(theTask.name());
 		
+		_textDetail = (TextView)theItemView.findViewById(R.id.textDetail);
+		// TODO: set detail text based on list & sort, _textDetail.setText(text)
+		_textDetail.setText(getTextDetail(theTask));
+		
 		//
 		// NOTE: setChecked() calls the onCheckChanged listener, so we make sure
 		//       that there is no listener when we call it to avoid unwanted callbacks
@@ -132,6 +141,22 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		setFieldIntoTag(theItemView, TASK_NAME, theTask.name());
 		
 		return theItemView;
+	}
+	
+	private final String getTextDetail(final Task theTask)
+	{
+		final TaskList theList = theTask.list();
+		switch(theList.sortOrder())
+		{
+			case BY_NAME:
+				return theTask.list().name();
+			case BY_IMPORTANCE:
+				return TaskUtils.getImportanceString(getContext(), theTask);
+			case BY_DUE_DATE:
+				return TaskUtils.getDueDateString(getContext(), theTask).toString();
+			default:
+				return TaskUtils.getPriorityString(getContext(), theTask);
+		}
 	}
 	
 	/**
