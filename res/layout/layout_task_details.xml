@@ -26,6 +26,7 @@
 	        android:hint="@string/hint_task_name_detail"
 	        android:textSize="24sp"
 	        android:inputType="text"
+	        android:imeOptions="actionDone"
 	        />
 	
 	    <TextView
@@ -51,10 +52,10 @@
 	        android:id="@+id/editTaskDescriptionDetail"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:minHeight="96dp"
 	        android:layout_below="@+id/textLabelTaskDescriptionDetail"
 	        android:hint="@string/hint_task_description_detail"
-	        android:inputType="textMultiLine"
+	        android:gravity="left|top"
+	        android:minLines="3"	        
 	        android:background="@drawable/task_details_field_background"
 	        />
 	    

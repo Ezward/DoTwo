@@ -17,7 +17,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/textTask"
-        android:text="&#x2605;&#x2605;&#x2605;&#x2605;&#x2605;"
         android:textAppearance="?android:attr/textAppearanceSmall" 
     	android:clickable="false"
         />

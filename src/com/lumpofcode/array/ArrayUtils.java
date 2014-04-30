@@ -1,7 +1,5 @@
 package com.lumpofcode.array;
 
-import java.util.Random;
-
 import com.lumpofcode.random.RandomNumber;
 
 /**

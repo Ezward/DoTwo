@@ -19,7 +19,6 @@ import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
 import com.lumpofcode.dotwo.R;

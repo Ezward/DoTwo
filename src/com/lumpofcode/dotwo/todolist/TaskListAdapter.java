@@ -17,7 +17,6 @@ import android.widget.ToggleButton;
 import com.lumpofcode.dotwo.R;
 import com.lumpofcode.dotwo.model.Task;
 import com.lumpofcode.dotwo.model.TaskList;
-import com.lumpofcode.dotwo.model.TaskSortOrder;
 import com.lumpofcode.dotwo.model.TaskUtils;
 
 public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListener, OnCheckedChangeListener

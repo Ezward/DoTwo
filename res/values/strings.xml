@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Do Today</string>
+    <string name="app_name">HoneyDo</string>
     <string name="tagline">Have fun. Get stuff done.</string>
     <string name="tagline_styled"><b><i>Have fun. Get stuff done.</i></b></string>
     

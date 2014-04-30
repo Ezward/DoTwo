@@ -251,11 +251,16 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 	@Override
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
 	{
-		if (EditorInfo.IME_ACTION_DONE == actionId)
+		switch(actionId)
 		{
-			onOK();
-			return true;
+			case EditorInfo.IME_ACTION_DONE:
+			case EditorInfo.IME_ACTION_GO:
+			{
+				onOK();
+				return true;
+			}
+			default:
+				return false;
 		}
-		return false;
 	}
 }

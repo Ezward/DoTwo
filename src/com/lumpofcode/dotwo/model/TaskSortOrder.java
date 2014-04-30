@@ -10,6 +10,7 @@ public enum TaskSortOrder
 	BY_DUE_DATE(new CompareTaskDueDate());
 	
 	private final Comparator<Task> _innerComparator;
+	@SuppressWarnings("unused")
 	private final Comparator<Task> _doneComparator;
 	
 	private TaskSortOrder(final Comparator<Task> theComparator)
