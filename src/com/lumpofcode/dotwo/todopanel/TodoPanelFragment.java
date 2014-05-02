@@ -36,6 +36,7 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 {
 	private static final int MISSING_LIST_FRAME = 0;
 	private static final int EMPTY_LIST_FRAME = 1;
+	private static final String TASK_LIST_NAME_DATA = TodoPanelFragment.class.getName() + "TASK_LIST_NAME_DATA";
 	
 	// we hold a collection of list adapters mapped to list name
 	// so we can show any list (one at a time) with the same fragment.
@@ -77,13 +78,7 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 		// that will be the first list we show.
 		_listView = (ListView)theView.findViewById(R.id.listTodo);
 		_listView.setEmptyView(_viewFlipper);	// empty view shows when list is empty
-		
-		//
-		// set task list given the argument.
-		// this may be null, which will show the empty list pane
-		//
-		setTaskListByName((null != _taskList) ? _taskList.name() : getArguments().getString(TaskList.TASK_LIST_NAME));
-		
+				
 		_newButton = (Button)theView.findViewById(R.id.buttonNewTodo);
 		_newButton.setOnClickListener(new NewTodoClickListener());
 		
@@ -111,6 +106,42 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 		_editNewTodo = null;
 
 		super.onDestroyView();
+	}
+	
+	
+
+	@Override
+	public void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		
+		if(null != _taskList)
+		{
+			outState.putString(TASK_LIST_NAME_DATA, _taskList.name());	
+		}
+	}
+	
+	
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+		
+		if(null != savedInstanceState)
+		{
+			//
+			// restore the task list from the saved instance
+			//
+			setTaskListByName(savedInstanceState.getString(TASK_LIST_NAME_DATA));
+		}
+		else
+		{
+			//
+			// set the task list from the fragment argument
+			//
+			setTaskListByName(getArguments().getString(TaskList.TASK_LIST_NAME));
+		}
 	}
 
 	/**

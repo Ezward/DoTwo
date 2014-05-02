@@ -1,8 +1,5 @@
 package com.lumpofcode.dotwo.todoactivity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,6 +40,8 @@ import com.lumpofcode.view.Pageable;
  */
 public class TodoActivity extends FragmentActivity implements NewListDialogListener, TaskListAddedListener, Pageable, OnClickListener, OnTaskModifiedListener
 {
+	private static final String DATA_LOADED_DATA = TodoActivity.class.getName() + "DATA_LOADED_DATA";
+	
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide fragments for each of the sections. We use a
 	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which will keep every loaded fragment in memory. If this becomes too memory intensive, it
@@ -53,10 +52,7 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 	/**
 	 * The {@link ViewPager} that will host the section contents.
 	 */
-	private ViewPager				mViewPager;
-
-	private List<TodoPanelFragment> _todoPanelFragments	= null;
-	
+	private ViewPager				mViewPager;	
 	private ViewFlipper _sortFlipper = null;
 	private Button _toggleSortByDate = null;
 	private Button _toggleSortByPriority = null;
@@ -91,10 +87,8 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 		_toggleSortByName = (Button)findViewById(R.id.toggleSortByName);
 		_toggleSortByName.setOnClickListener(this);
 
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the app.
+		// Create the adapter that will return a fragment for each of the vies
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-		_todoPanelFragments = new ArrayList<TodoPanelFragment>(TaskLists.taskListCount());
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -118,17 +112,7 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 			@Override
 			public void onPageSelected(int position)
 			{
-				// null out the task list name
-				// and tell the adapter
-				// _selectedTaskListName = null;
-				//
-				// if it is not the first page (TodayList) or last page (Add a new list)
-				// the tell the page to show it's list
-				//
-				if((position > 0) && (position < (getPageCount() - 1)))
-				{
-					_todoPanelFragments.get(position - 1).setTaskListByName(TaskLists.getTaskListByIndex(position - 1).name());
-				}
+				// TODO 
 			}
 
 		});
@@ -136,10 +120,26 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 		//
 		// load the data
 		//
-		final LoadModel theLoader = new LoadModel();
-		theLoader.execute();
+		if(null != savedInstanceState)
+		{
+			_dataLoaded = savedInstanceState.getBoolean(DATA_LOADED_DATA);
+		}
+		if(!_dataLoaded)
+		{
+			//
+			// load the data the first time
+			//
+			final LoadModel theLoader = new LoadModel();
+			theLoader.execute();
+		}
+		else
+		{
+			//
+			// data is already loaded, notify the adapter
+			//
+			mSectionsPagerAdapter.notifyDataSetChanged();
+		}
 	}
-	
 	
 
 	@Override
@@ -149,12 +149,18 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 		mViewPager.setAdapter(null);
 		mViewPager = null;
 
-		_todoPanelFragments.clear();
-		_todoPanelFragments = null;
-		
 		super.onDestroy();
 	}
 
+
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		
+		outState.putBoolean(DATA_LOADED_DATA, _dataLoaded);
+	}
 
 
 	@Override
@@ -295,7 +301,6 @@ public class TodoActivity extends FragmentActivity implements NewListDialogListe
 						// empty fragment so user can create new list
 						theFragment = newTodoFragment(null);
 					}
-					_todoPanelFragments.add(theFragment);
 					return theFragment;
 				}
 			}
