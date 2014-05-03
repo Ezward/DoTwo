@@ -1,11 +1,13 @@
 package com.lumpofcode.dotwo.todopanel;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -51,16 +53,69 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onCreate(" + ((null != savedInstanceState)? savedInstanceState.getString(TASK_LIST_NAME_DATA) : "null") + ")");
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public void onDestroy()
 	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onDestroy()");
 		super.onDestroy();
 	}
+	
+	
 
 
+
+	@Override
+	public void onAttach(Activity activity)
+	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onAttach(Activity)");
+		super.onAttach(activity);
+	}
+
+	@Override
+	public void onDetach()
+	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onDetach()");
+		super.onDetach();
+	}
+
+	@Override
+	public void onPause()
+	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onPause()");
+		super.onPause();
+	}
+
+	@Override
+	public void onResume()
+	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onResume()");
+		super.onResume();
+	}
+
+	@Override
+	public void onStart()
+	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onStart()");
+		super.onStart();
+	}
+
+	@Override
+	public void onStop()
+	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onStop()");
+		super.onStop();
+	}
+
+	@Override
+	public void onViewStateRestored(Bundle savedInstanceState)
+	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onViewStateRestored(" + ((null != savedInstanceState)? savedInstanceState.getString(TASK_LIST_NAME_DATA) : "null") + ")");
+		super.onViewStateRestored(savedInstanceState);
+	}
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -68,6 +123,7 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onCreateView(" + ((null != savedInstanceState)? savedInstanceState.getString(TASK_LIST_NAME_DATA) : "null") + ")");
 		
 		final View theView = inflater.inflate(R.layout.fragment_todo_panel, container, false);
 		
@@ -88,6 +144,7 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 		_editNewTodo = (EditText)theView.findViewById(R.id.editNewTodo);
 		_editNewTodo.addTextChangedListener(new EditTodoWatcher());
 		
+		restoreFromSavedInstanceState(savedInstanceState);
 		return theView;
 	}
 	
@@ -96,11 +153,14 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 	@Override
 	public void onDestroyView()
 	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onDestroyView()");
 		//
 		// free-up anything we create in onCreateView()
 		//
-		setTaskListByName(null);	// this will free up adapter
-		_taskList = null;
+		if(null!= _taskList)
+		{
+			_taskList.detachAdapter();
+		}
 		_listView = null;
 		_newButton = null;
 		_editNewTodo = null;
@@ -113,6 +173,7 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 	@Override
 	public void onSaveInstanceState(Bundle outState)
 	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onSaveInstanceState(Bundle outState)");
 		super.onSaveInstanceState(outState);
 		
 		if(null != _taskList)
@@ -121,13 +182,8 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 		}
 	}
 	
-	
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState)
+	private void restoreFromSavedInstanceState(Bundle savedInstanceState)
 	{
-		super.onActivityCreated(savedInstanceState);
-		
 		if(null != savedInstanceState)
 		{
 			//
@@ -142,6 +198,16 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 			//
 			setTaskListByName(getArguments().getString(TaskList.TASK_LIST_NAME));
 		}
+
+	}
+	
+	
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState)
+	{
+		Log.d(TodoPanelFragment.class.getSimpleName(), "onActivityCreated(" + ((null != savedInstanceState)? savedInstanceState.getString(TASK_LIST_NAME_DATA) : "null") + ")");
+		super.onActivityCreated(savedInstanceState);
 	}
 
 	/**
