@@ -132,11 +132,11 @@ public final class Task extends Model implements Comparable<Task>
 		final long theDaysToGo = TimeUtils.timeSpanInDays(dueDateUTC() - theCurrentTime);
 		if(theDaysToGo <= 1)
 		{
-			return 5;	// highest urgency;
+			return 1;	// highest urgency;
 		}
 		if(theDaysToGo <= 2)
 		{
-			return 4;
+			return 2;
 		}
 		if(theDaysToGo <= 5)
 		{
@@ -144,9 +144,9 @@ public final class Task extends Model implements Comparable<Task>
 		}
 		if(theDaysToGo <= 10)
 		{
-			return 2;
+			return 4;
 		}
-		return 1;
+		return 5;
 	}
 
 	@Override
