@@ -39,6 +39,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		 * @param theTaskName, the name of the task
 		 */
 		public void onTaskClick(
+				final View theTaskView,
 				final TaskListAdapter theAdapter, 
 				final String theTaskListName,
 				final String theTaskName);
@@ -52,6 +53,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		 * @param theCheckedState, true if checked, false if not
 		 */
 		public void onTaskDoneCheckedChanged(
+				final View theTaskView,
 				final TaskListAdapter theAdapter, 
 				final String theTaskListName,
 				final String theTaskName, 
@@ -66,6 +68,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		 * @param theCheckedState, true if selected, false if not
 		 */
 		public void onTaskTodayCheckedChanged(
+				final View theTaskView,
 				final TaskListAdapter theAdapter, 
 				final String theTaskListName,
 				final String theTaskName, 
@@ -201,6 +204,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		if(null != _listener)
 		{
 			_listener.onTaskClick(
+					theView,
 					this, 
 					(String)this.getFieldFromTag(theView, TASK_LIST_NAME), 
 					(String)this.getFieldFromTag(theView, TASK_NAME));
@@ -217,6 +221,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 				case R.id.toggleDone:
 				{
 					_listener.onTaskDoneCheckedChanged(
+							(View)(theButton.getParent()),
 							this, 
 							(String)this.getFieldFromTag(theButton, TASK_LIST_NAME), 
 							(String)this.getFieldFromTag(theButton, TASK_NAME),
@@ -226,6 +231,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 				case R.id.toggleToday:
 				{
 					_listener.onTaskTodayCheckedChanged(
+							(View)(theButton.getParent()),
 							this, 
 							(String)this.getFieldFromTag(theButton, TASK_LIST_NAME), 
 							(String)this.getFieldFromTag(theButton, TASK_NAME),

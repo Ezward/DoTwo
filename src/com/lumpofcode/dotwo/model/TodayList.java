@@ -74,7 +74,6 @@ public final class TodayList
     		if(theTask.isToday())
     		{
 		        _innerAddTask(_todayList, theTask);
-		        notifyDataChanged();	// tell attached adapter that the data changed.
     		}
     	}
     }
@@ -97,7 +96,6 @@ public final class TodayList
     	if(null != theTask)
     	{
 			_innerRemoveTask(_todayList, theTask);
-	        notifyDataChanged();	// tell attached adapter that the data changed.
     	}
     }
     private static void _innerRemoveTask(final ArrayList<Task> theList, final Task theTask) 

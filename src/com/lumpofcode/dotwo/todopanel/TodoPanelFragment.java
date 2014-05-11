@@ -322,7 +322,7 @@ public class TodoPanelFragment extends AbstractTaskListFragment
 					_adapter.notifyDataSetChanged();	// tell our task list that it's changed
 					
 					TodayList.addTask(theTask);	// add it to the today list in sort order
-												// this will notify the task list directly.
+					TodayList.notifyDataChanged();
 					
 					// persist the task.
 					theTask.save();

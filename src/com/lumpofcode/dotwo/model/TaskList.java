@@ -62,11 +62,16 @@ public final class TaskList extends Model
 	 * NOTE: any ArrayAdapters that are attached to the data
 	 *       should be notifiedDataChanged when this completes.
 	 */
-	protected void load()
+	protected void load(final boolean includeDone)
 	{
+		final String theWhereClause = 
+				includeDone 
+				? "TaskList = ?"
+				: "TaskList = ? and done = 0";
+		
 		final List<Task> theTasks = new Select()
 	        .from(Task.class)
-	        .where("TaskList = ?", this.getId())
+	        .where(theWhereClause, this.getId())
 	        .execute();
 	
 		//
@@ -75,6 +80,10 @@ public final class TaskList extends Model
 		//
 		_tasks().clear();
 		_tasks().addAll(theTasks);
+	}
+	protected void load()
+	{
+		load(false);
 	}
 	
 	/**
@@ -128,7 +137,8 @@ public final class TaskList extends Model
 		if(null == __tasks)
 		{
 			// load task for this list from database
-			__tasks = getMany(Task.class, "TaskList");
+//			__tasks = getMany(Task.class, "TaskList");
+			__tasks = new ArrayList<Task>();
 		}
 		return __tasks;
 	}
@@ -237,6 +247,16 @@ public final class TaskList extends Model
 		}
 	}
 	private void removeTaskByIndex(final int theIndex)
+	{
+		if((theIndex >= 0) && (theIndex < taskCount()))
+		{
+			// remove from map, then list
+			final Task theTask = getTaskByIndex(theIndex);
+			_tasks().remove(theIndex);
+		}
+		
+	}
+	private void deleteTaskByIndex(final int theIndex)
 	{
 		if((theIndex >= 0) && (theIndex < taskCount()))
 		{
