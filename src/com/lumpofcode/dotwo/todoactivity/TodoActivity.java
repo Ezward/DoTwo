@@ -4,12 +4,12 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +40,7 @@ import com.lumpofcode.view.Pageable;
  * @author Ed
  *
  */
-public class TodoActivity extends FragmentActivity implements NewListDialogListener, TaskListAddedListener, Pageable, OnClickListener, OnTaskModifiedListener
+public class TodoActivity extends ActionBarActivity implements NewListDialogListener, TaskListAddedListener, Pageable, OnClickListener, OnTaskModifiedListener
 {
 	private static final String DATA_LOADED_DATA = TodoActivity.class.getName() + "DATA_LOADED_DATA";
 	private static final String SORT_BUTTON_DATA = TodoActivity.class.getName() + "SORT_BUTTON_DATA";

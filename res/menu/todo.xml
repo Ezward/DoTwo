@@ -1,16 +1,19 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu 
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:honeydo="http://schemas.android.com/apk/res-auto"
+    >
 
     <item
         android:id="@+id/action_goto_today"
         android:icon="@drawable/ic_action_goto_today"
         android:title="@string/action_goto_today"
-        android:showAsAction="ifRoom"
+        honeydo:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/action_new_list"
         android:icon="@drawable/ic_action_new_list"
         android:title="@string/action_new_list"
-        android:showAsAction="ifRoom"
+        honeydo:showAsAction="ifRoom"
         />
     
 </menu>
