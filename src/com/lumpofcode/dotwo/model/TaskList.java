@@ -41,6 +41,11 @@ public final class TaskList extends Model
 	public String _name;
 	
 	//
+	// our serialized copy of the persisted id;
+	//
+	private String _id_ = null;
+	
+	//
 	// private collection, populated with call to ActiveAndroid
 	//
 	private ArrayList<Task> __tasks = null;
@@ -148,7 +153,27 @@ public final class TaskList extends Model
 	}
 	
 
-	
+	/**
+	 * @return the primary key for this list or null if task is not persisted.
+	 */
+	public final String id()
+	{
+		if(null == _id_)
+		{
+			//
+			// if we have been persisted, then the id is
+			// immutable and we can save a locally serialized
+			// copy of it so users of the class always
+			// treat it as a string.
+			//
+			final Long theId = this.getId();
+			if(null != theId)
+			{
+				_id_ = theId.toString();
+			}
+		}
+		return _id_;
+	}
 		
 	public String name()
 	{
@@ -169,6 +194,33 @@ public final class TaskList extends Model
 		if(SHARED_BY.equals(theTaskName)) throw new IllegalArgumentException("getTask: use of reserved field name, " + SHARED_BY + ".");
 	}
 	
+	/**
+	 * Get a named task from the list of tasks.
+	 * 
+	 * @param theTaskName
+	 * @return
+	 */
+	public final Task getTaskById(final String theTaskId)
+	{
+		return getTaskByIndex(getTaskIndexById(theTaskId));
+	}
+	private final int getTaskIndexById(final String theTaskId)
+	{
+		if((null != theTaskId) && !theTaskId.isEmpty())
+		{
+			// check the map to see if it exists before searching for it
+			for(int i = 0; i < taskCount(); i += 1)
+			{
+				final Task theTask = _tasks().get(i);
+				if(theTask.id().equals(theTaskId))
+				{
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+
 
 	/**
 	 * Get a named task from the list of tasks.
@@ -176,11 +228,15 @@ public final class TaskList extends Model
 	 * @param theTaskName
 	 * @return
 	 */
-	public Task getTaskByName(final String theTaskName)
+//	public Task getTaskByName(final String theTaskName)
+//	{
+//		return getTaskByIndex(getTaskIndexByName(theTaskName));
+//	}
+	public Task findTaskByName(final String theTaskName, final int theStartingIndex)
 	{
-		return getTaskByIndex(getTaskIndexByName(theTaskName));
+		return getTaskByIndex(findTaskIndexByName(theTaskName, theStartingIndex));
 	}
-	public Task getTaskByIndex(final int theIndex)
+	public final Task getTaskByIndex(final int theIndex)
 	{
 		if((theIndex >= 0) && (theIndex < this.taskCount()))
 		{
@@ -188,17 +244,20 @@ public final class TaskList extends Model
 		}
 		return null;
 	}
-	private int getTaskIndexByName(final String theTaskName)
+	private final int findTaskIndexByName(final String theTaskName, final int theStartingIndex)
 	{
 		_validateTaskName(theTaskName);
 		
 		// check the map to see if it exists before searching for it
-		for(int i = 0; i < taskCount(); i += 1)
+		if(theStartingIndex >= 0)
 		{
-			final Task theTask = _tasks().get(i);
-			if(theTask.name().equals(theTaskName))
+			for(int i = theStartingIndex; i < taskCount(); i += 1)
 			{
-				return i;
+				final Task theTask = _tasks().get(i);
+				if(theTask.name().equals(theTaskName))
+				{
+					return i;
+				}
 			}
 		}
 		return -1;
@@ -209,10 +268,9 @@ public final class TaskList extends Model
 		if(null != theTask)
 		{
 			// don't allow reserved keys
-			final String theTaskName = theTask.name();
-			_validateTaskName(theTaskName);
+			_validateTaskName(theTask.name());
 			
-			final int i = getTaskIndexByName(theTaskName);
+			final int i = getTaskIndexById(theTask.id());
 			if(i >= 0)
 			{
 				// overwrite existing task
@@ -227,31 +285,23 @@ public final class TaskList extends Model
 		
 	}
 	
-	public void removeTask(final Task theTask)
+	public final void removeTask(final Task theTask)
 	{
 		if(null != theTask)
 		{
-			final String theTaskName = theTask.name();
-			removeTaskByName(theTaskName);
+			removeTaskById(theTask.id());
 		}
 	}
-	public void removeTaskByName(final String theTaskName)
+	public final void removeTaskById(final String theTaskId)
 	{
-		if((null != theTaskName) && !theTaskName.isEmpty())
-		{
-			if(TASK_LIST_NAME.equals(theTaskName)) throw new IllegalArgumentException("getTask: use of reserved field name, " + SHARED_BY + ".");
-			if(SHARED_BY.equals(theTaskName)) throw new IllegalArgumentException("getTask: use of reserved field name, " + SHARED_BY + ".");
-
-			// remove the field if it is null or empty
-			removeTaskByIndex(getTaskIndexByName(theTaskName));
-		}
+		// remove the field if it is null or empty
+		removeTaskByIndex(getTaskIndexById(theTaskId));
 	}
-	private void removeTaskByIndex(final int theIndex)
+	private final void removeTaskByIndex(final int theIndex)
 	{
 		if((theIndex >= 0) && (theIndex < taskCount()))
 		{
-			// remove from map, then list
-			final Task theTask = getTaskByIndex(theIndex);
+			// remove from  list
 			_tasks().remove(theIndex);
 		}
 		
@@ -260,7 +310,7 @@ public final class TaskList extends Model
 	{
 		if((theIndex >= 0) && (theIndex < taskCount()))
 		{
-			// remove from map, then list
+			// get the task, then remove from list, then delete
 			final Task theTask = getTaskByIndex(theIndex);
 			_tasks().remove(theIndex);
 			

@@ -21,8 +21,8 @@ import com.lumpofcode.dotwo.model.TaskUtils;
 
 public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListener, OnCheckedChangeListener
 {
-	public static final int TASK_LIST_NAME = "TASK_LIST_NAME".hashCode();
-	public static final int TASK_NAME = "TASK_NAME".hashCode();
+	public static final int TASK_LIST_ID = "TASK_LIST_NAME".hashCode();
+	public static final int TASK_ID = "TASK_NAME".hashCode();
 	
 	private final int itemLayoutId;
 	private TaskListListener _listener;
@@ -35,43 +35,43 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		 * Handle click on a task.
 		 * 
 		 * @param theAdapter, the TaskListAdapter
-		 * @param theTaskListName the name of the list that owns the task
-		 * @param theTaskName, the name of the task
+		 * @param theTaskListId the unique, immutable identifier of the list that owns the task
+		 * @param theTaskId, the unique, immutable identifier key of the task
 		 */
 		public void onTaskClick(
 				final View theTaskView,
 				final TaskListAdapter theAdapter, 
-				final String theTaskListName,
-				final String theTaskName);
+				final String theTaskListId,
+				final String theTaskId);
 		
 		/**
 		 * Handle check changes on done toggle.
 		 * 
 		 * @param theAdapter, the TaskListAdapter
-		 * @param theTaskListName the name of the list that owns the task
-		 * @param theTaskName, the name of the task
+		 * @param theTaskListId the unique, immutable identifier of the list that owns the task
+		 * @param theTaskId, the unique, immutable identifier key of the task
 		 * @param theCheckedState, true if checked, false if not
 		 */
 		public void onTaskDoneCheckedChanged(
 				final View theTaskView,
 				final TaskListAdapter theAdapter, 
-				final String theTaskListName,
-				final String theTaskName, 
+				final String theTaskListId,
+				final String theTaskId,
 				final boolean theCheckedState);
 		
 		/**
 		 * Handle check changes on today toggle.
 		 * 
 		 * @param theAdapter, the TaskListAdapter
-		 * @param theTaskListName the name of the list that owns the task
-		 * @param theTaskName, the name of the task
+		 * @param theTaskListId the unique, immutable identifier of the list that owns the task
+		 * @param theTaskId, the unique, immutable identifier key of the task
 		 * @param theCheckedState, true if selected, false if not
 		 */
 		public void onTaskTodayCheckedChanged(
 				final View theTaskView,
 				final TaskListAdapter theAdapter, 
-				final String theTaskListName,
-				final String theTaskName, 
+				final String theTaskListId,
+				final String theTaskId,
 				final boolean theCheckedState);
 	}
 	
@@ -139,8 +139,8 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 		
 		// stash the task name in the item's tag so we can quickly look it up
 		// this will also copy it into the toggle buttons' tag
-		setFieldIntoTag(theItemView, TASK_LIST_NAME, theTask.list().name());
-		setFieldIntoTag(theItemView, TASK_NAME, theTask.name());
+		setFieldIntoTag(theItemView, TASK_LIST_ID, theTask.list().id());
+		setFieldIntoTag(theItemView, TASK_ID, theTask.id());
 		
 		return theItemView;
 	}
@@ -206,8 +206,8 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 			_listener.onTaskClick(
 					theView,
 					this, 
-					(String)this.getFieldFromTag(theView, TASK_LIST_NAME), 
-					(String)this.getFieldFromTag(theView, TASK_NAME));
+					(String)this.getFieldFromTag(theView, TASK_LIST_ID), 
+					(String)this.getFieldFromTag(theView, TASK_ID));
 		}
 	}
 
@@ -223,8 +223,8 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 					_listener.onTaskDoneCheckedChanged(
 							(View)(theButton.getParent()),
 							this, 
-							(String)this.getFieldFromTag(theButton, TASK_LIST_NAME), 
-							(String)this.getFieldFromTag(theButton, TASK_NAME),
+							(String)this.getFieldFromTag(theButton, TASK_LIST_ID), 
+							(String)this.getFieldFromTag(theButton, TASK_ID),
 							theCheckedState);
 					return;
 				}
@@ -233,8 +233,8 @@ public class TaskListAdapter extends ArrayAdapter<Task> implements OnClickListen
 					_listener.onTaskTodayCheckedChanged(
 							(View)(theButton.getParent()),
 							this, 
-							(String)this.getFieldFromTag(theButton, TASK_LIST_NAME), 
-							(String)this.getFieldFromTag(theButton, TASK_NAME),
+							(String)this.getFieldFromTag(theButton, TASK_LIST_ID), 
+							(String)this.getFieldFromTag(theButton, TASK_ID),
 							theCheckedState);
 					return;
 				}

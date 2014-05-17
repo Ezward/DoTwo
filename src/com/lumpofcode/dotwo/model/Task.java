@@ -32,6 +32,11 @@ public final class Task extends Model implements Comparable<Task>
 	@Column(name = "due")
 	public Long _due = System.currentTimeMillis() + TimeUtils.WEEK_IN_MILLIS;;
  		
+	//
+	// our serialized copy of the persisted id;
+	//
+	private String _id_ = null;
+
 	/**
 	 * Do NOT call this constructor directly.
 	 * The public no-arg constructor is required by Parse.
@@ -55,7 +60,28 @@ public final class Task extends Model implements Comparable<Task>
 		_name = theName;
 	}
 	
-	
+	/**
+	 * @return the primary key for this list or null if task is not persisted.
+	 */
+	public final String id()
+	{
+		if(null == _id_)
+		{
+			//
+			// if we have been persisted, then the id is
+			// immutable and we can save a locally serialized
+			// copy of it so users of the class always
+			// treat it as a string.
+			//
+			final Long theId = this.getId();
+			if(null != theId)
+			{
+				_id_ = theId.toString();
+			}
+		}
+		return _id_;
+	}
+
 	public TaskList list()
 	{
 		return _list;

@@ -482,7 +482,7 @@ public class TodoActivity extends ActionBarActivity implements NewListDialogList
 
 
 	@Override
-	public void onTaskModified(String theTaskListName, String theTaskName)
+	public void onTaskModified(String theTaskListId, String theTaskId)
 	{
 		//
 		// we don't need to do anything, the dialog is

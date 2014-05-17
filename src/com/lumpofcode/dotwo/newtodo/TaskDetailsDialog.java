@@ -37,8 +37,8 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 	public static final int TASK_DETAILS_DIALOG = TaskDetailsDialog.class.hashCode();
 	public static final int RESULT_OK = 1;
 	
-	public static final String ARG_TASK_LIST_NAME = "ARG_TASK_LIST_NAME";
-	public static final String ARG_TASK_NAME = "ARG_TASK_NAME";
+	public static final String ARG_TASK_LIST_ID = TaskDetailsDialog.class.getName() + "ARG_TASK_LIST_ID";
+	public static final String ARG_TASK_ID = TaskDetailsDialog.class.getName() + "ARG_TASK_ID";
 	
 	
 	private Task _task;
@@ -57,10 +57,10 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 		 * Note: if the dialog is cancelled, no change is made to 
 		 *       the task and this method is not called.
 		 *       
-		 * @param theTaskListName
-		 * @param theTaskName
+		 * @param theTaskListId
+		 * @param theTaskId
 		 */
-		void onTaskModified(final String theTaskListName,final String theTaskName);
+		void onTaskModified(final String theTaskListId, final String theTaskId);
 	}
 	
 	/**
@@ -95,8 +95,8 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 		
 		// pass arguments to dialog instance
 		Bundle theArguments = new Bundle();
-		theArguments.putString(ARG_TASK_LIST_NAME, theTask.list().name());
-		theArguments.putString(ARG_TASK_NAME, theTask.name());
+		theArguments.putString(ARG_TASK_LIST_ID, theTask.list().id());
+		theArguments.putString(ARG_TASK_ID, theTask.id());
 		theDialog.setArguments(theArguments);
 		
 
@@ -107,14 +107,14 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		// get the task from the arguments
-		final String theTaskListName = getArguments().getString(ARG_TASK_LIST_NAME);
-		final String theTaskName = getArguments().getString(ARG_TASK_NAME);
+		final String theTaskListId = getArguments().getString(ARG_TASK_LIST_ID);
+		final String theTaskId = getArguments().getString(ARG_TASK_ID);
 		
-		final TaskList theTaskList = TaskLists.getTaskListByName(theTaskListName);
-		_task = theTaskList.getTaskByName(theTaskName);
+		final TaskList theTaskList = TaskLists.getTaskListById(theTaskListId);
+		_task = theTaskList.getTaskById(theTaskId);
 
 		// set the title
-		getDialog().setTitle(theTaskListName + ":" + theTaskName);
+		getDialog().setTitle(theTaskList.name() + ":" + _task.name());
 		
 		//
 		// prefill the fields from the task
@@ -194,7 +194,7 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 			//
 			// it's ok if it does not change, or it is not a duplicate
 			//
-			if(theName.equals(_task.name()) || (null == _task.list().getTaskByName(theName)))
+			if(theName.equals(_task.name()) || (null == _task.list().findTaskByName(theName, 0)))
 			{
 				// TODO: Test fields; don't tell caller if they did not change.
 				//
@@ -214,8 +214,8 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 				if(null != this.getTargetFragment())
 				{
 					final Intent theData = new Intent();
-					theData.putExtra(ARG_TASK_LIST_NAME, _task.list().name());
-					theData.putExtra(ARG_TASK_NAME, _task.name());
+					theData.putExtra(ARG_TASK_LIST_ID, _task.list().id());
+					theData.putExtra(ARG_TASK_ID, _task.id());
 					this.getTargetFragment().onActivityResult(TASK_DETAILS_DIALOG, RESULT_OK, theData);
 				}
 				else if(getActivity() instanceof OnTaskModifiedListener)
@@ -223,7 +223,7 @@ public class TaskDetailsDialog extends DialogFragment implements OnClickListener
 					OnTaskModifiedListener listener = (OnTaskModifiedListener) getActivity();
 					
 					// tell the listener that we changed this task
-					listener.onTaskModified(_task.list().name(), _task.name());
+					listener.onTaskModified(_task.list().id(), _task.id());
 				}
 				dismiss();
 			}

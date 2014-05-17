@@ -103,6 +103,33 @@ public final class TaskLists
 		}
 		return -1;
 	}
+	public static final TaskList getTaskListById(final String theListId)
+	{
+		final int i = _getTaskListIndexById(theListId);
+		if(i >= 0)
+		{
+			return _taskListArray.get(i);
+		}
+		return null;
+	}
+	private static final int _getTaskListIndexById(final String theListId)
+	{
+		if((null != theListId) && !theListId.isEmpty())
+		{
+			final int n = _taskListArray.size();
+			for(int i = 0; i < n; i += 1)
+			{
+				final TaskList theExistingTaskList = _taskListArray.get(i);
+				
+				// TODO : should to a case insensitive, igore white space compare
+				if(theListId.equals(theExistingTaskList.id()))
+				{
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
 			
 	private static final void putTaskList(final TaskList theTaskList)
 	{

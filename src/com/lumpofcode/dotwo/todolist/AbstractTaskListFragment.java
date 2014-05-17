@@ -27,8 +27,8 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 	public void onTaskDoneCheckedChanged(
 			final View theTaskView,
 			TaskListAdapter theAdapter,
-			String theTaskListName,
-			String theTaskName,
+			String theTaskListId,
+			String theTaskId,
 			boolean theCheckedState)
 	{
 		// toast to the user
@@ -36,12 +36,12 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 
 		if (theCheckedState)
 		{
-			animateTaskDone(theTaskView, theAdapter, theTaskListName, theTaskName);
+			animateTaskDone(theTaskView, theAdapter, theTaskListId, theTaskId);
 		}
 		else
 		// unchecked
 		{
-			setTaskDoneChecked(theAdapter, theTaskListName, theTaskName, theCheckedState);
+			setTaskDoneChecked(theAdapter, theTaskListId, theTaskId, theCheckedState);
 		}
 	}
 
@@ -57,15 +57,15 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 	private final TaskAnimationHandler animateTaskDone(
 			final View theTaskView,
 			final TaskListAdapter theAdapter,
-			final String theTaskListName,
-			final String theTaskName)
+			final String theTaskListId,
+			final String theTaskId)
 	{
 		final TaskAnimationHandler theHandler = new TaskAnimationHandler()
 		{
 			@Override
 			public void onAnimationFinished()
 			{
-				setTaskDoneChecked(theAdapter, theTaskListName, theTaskName, true);
+				setTaskDoneChecked(theAdapter, theTaskListId, theTaskId, true);
 			}
 		};
 		return theHandler.startAnimation(theTaskView, R.anim.fade_out);
@@ -81,14 +81,14 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 	 */
 	private final void setTaskDoneChecked(
 			TaskListAdapter theAdapter,
-			String theTaskListName,
-			String theTaskName,
+			String theTaskListId,
+			String theTaskId,
 			boolean theCheckedState)
 	{
-		final TaskList theTaskList = TaskLists.getTaskListByName(theTaskListName);
+		final TaskList theTaskList = TaskLists.getTaskListById(theTaskListId);
 		if (null != theTaskList)
 		{
-			final Task theTask = theTaskList.getTaskByName(theTaskName);
+			final Task theTask = theTaskList.getTaskById(theTaskId);
 			if (null != theTask)
 			{
 
@@ -110,12 +110,12 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 	public void onTaskTodayCheckedChanged(
 			final View theTaskView,
 			TaskListAdapter theAdapter,
-			String theTaskListName,
-			String theTaskName,
+			String theTaskListId,
+			String theTaskId,
 			boolean theCheckedState)
 	{
-		final TaskList theTaskList = TaskLists.getTaskListByName(theTaskListName);
-		final Task theTask = theTaskList.getTaskByName(theTaskName);
+		final TaskList theTaskList = TaskLists.getTaskListById(theTaskListId);
+		final Task theTask = theTaskList.getTaskById(theTaskId);
 
 		// toast to the user
 		_toast(theCheckedState ? _toastToday() : _toastNotToday());
@@ -143,12 +143,12 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 	public void onTaskClick(
 			final View theTaskView,
 			final TaskListAdapter theParent,
-			final String theTaskListName,
-			final String theTaskName)
+			final String theTaskListId,
+			final String theTaskId)
 	{
 		// we stashed the list name in the tag
-		final TaskList theTaskList = TaskLists.getTaskListByName(theTaskListName);
-		final Task theTask = theTaskList.getTaskByName(theTaskName);
+		final TaskList theTaskList = TaskLists.getTaskListById(theTaskListId);
+		final Task theTask = theTaskList.getTaskById(theTaskId);
 		final TaskDetailsDialog theDialog = TaskDetailsDialog.newTaskDetailsDialog(theTask, this);
 		theDialog.show(getFragmentManager(), null);
 		// NOTE: the dlalog will call onActivityResult() when it finishes with Ok
@@ -171,9 +171,9 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 			//
 			// a task has been edited, save it and notify the today list
 			//
-			final TaskList theList = TaskLists.getTaskListByName(data.getExtras().getString(
-					TaskDetailsDialog.ARG_TASK_LIST_NAME));
-			final Task theTask = theList.getTaskByName(data.getExtras().getString(TaskDetailsDialog.ARG_TASK_NAME));
+			final TaskList theList = TaskLists.getTaskListById(
+					data.getExtras().getString(TaskDetailsDialog.ARG_TASK_LIST_ID));
+			final Task theTask = theList.getTaskById(data.getExtras().getString(TaskDetailsDialog.ARG_TASK_ID));
 			theTask.save();
 
 			// notify the adapter so it redraws the item
@@ -285,13 +285,14 @@ public abstract class AbstractTaskListFragment extends Fragment implements TaskL
 	{
 		private View			_taskView	= null;
 		private final Handler	_handler	= new Handler();
-		private final Runnable	_runnable	= new Runnable()
-											{
-												public void run()
-												{
-													TaskAnimationHandler.this.finishAnimation();
-												}
-											};
+		private final Runnable	_runnable	= 
+				new Runnable()
+				{
+					public void run()
+					{
+						TaskAnimationHandler.this.finishAnimation();
+					}
+				};
 
 		/**
 		 * Start an animation. Any previous animation will be cancelled.
